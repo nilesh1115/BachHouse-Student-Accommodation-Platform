@@ -7,12 +7,13 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useClerk, UserButton } from '@clerk/nextjs';
 import {HomeIcon} from '@/assets/assets';
+
 const Navbar = () => {
   const { isOwner, user } = useAppContext();
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { signIn } = useClerk(); // Correctly destructured signIn
+  const { signOut, openSignIn } = useClerk(); // Destructure openSignIn directly
 
   useEffect(() => {
     setIsMounted(true);
@@ -29,6 +30,12 @@ const Navbar = () => {
   const handleNavigation = (path) => {
     router.push(path);
     closeMobileMenu();
+  };
+
+  const handleSignIn = () => {
+    if (openSignIn) {
+      openSignIn();
+    }
   };
 
   return (
@@ -104,7 +111,7 @@ const Navbar = () => {
           {/* User Button / Login */}
           {user ? (
             <div className="pr-4">
-              <UserButton  >
+              <UserButton>
                 <UserButton.MenuItems>
                   <UserButton.Action label="Home" labelIcon={<HomeIcon/>} onClick={()=>router.push('/')}/>
                 </UserButton.MenuItems>
@@ -112,7 +119,7 @@ const Navbar = () => {
             </div>
           ) : (
             <button
-              onClick={() => signIn.openSignIn()}
+              onClick={handleSignIn}
               className="flex items-center gap-2 border border-[#5e17eb] px-3 py-1 md:px-4 md:py-1.5 rounded-full hover:bg-[#5e17eb] hover:text-white transition text-base"
             >
               <Image
@@ -175,7 +182,7 @@ const Navbar = () => {
                   </div>
                 ) : (
                   <button
-                    onClick={() => signIn.openSignIn()}
+                    onClick={handleSignIn}
                     className="w-full flex items-center justify-center gap-2 border border-[#5e17eb] px-4 py-2.5 rounded-full hover:bg-[#5e17eb] hover:text-white transition text-base"
                   >
                     <Image
