@@ -6,14 +6,13 @@ import { useAppContext } from '@/context/AppContext';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useClerk, UserButton } from '@clerk/nextjs';
-import { HomeIcon } from '@/assets/assets';
-
+import {HomeIcon} from '@/assets/assets';
 const Navbar = () => {
   const { isOwner, user } = useAppContext();
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { signIn } = useClerk();
+  const { signIn } = useClerk(); // Correctly destructured signIn
 
   useEffect(() => {
     setIsMounted(true);
@@ -105,38 +104,10 @@ const Navbar = () => {
           {/* User Button / Login */}
           {user ? (
             <div className="pr-4">
-              <UserButton afterSignOutUrl="/">
-                {/* Mobile - Simple UserButton */}
-                <div className="md:hidden">
-                  <UserButton.UserProfileModal />
-                </div>
-                
-                {/* Desktop - UserButton with custom actions */}
-                <div className="hidden md:block">
-                  <UserButton.UserProfileModal>
-                    <div className="flex flex-col gap-1 p-2">
-                      <button
-                        onClick={() => router.push('/')}
-                        className="flex items-center gap-2 px-4 py-2 text-left rounded-md hover:bg-gray-100 transition-colors text-sm"
-                      >
-                        <HomeIcon className="w-4 h-4" />
-                        <span>Home</span>
-                      </button>
-                      <button
-                        onClick={() => router.push('/all-properties')}
-                        className="flex items-center gap-2 px-4 py-2 text-left rounded-md hover:bg-gray-100 transition-colors text-sm"
-                      >
-                        <Image 
-                          src={assets.property_icon} 
-                          alt="Properties" 
-                          width={16} 
-                          height={16} 
-                        />
-                        <span>Properties</span>
-                      </button>
-                    </div>
-                  </UserButton.UserProfileModal>
-                </div>
+              <UserButton  >
+                <UserButton.MenuItems>
+                  <UserButton.Action label="Home" labelIcon={<HomeIcon/>} onClick={()=>router.push('/')}/>
+                </UserButton.MenuItems>
               </UserButton>
             </div>
           ) : (
