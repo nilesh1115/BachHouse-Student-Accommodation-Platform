@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import { useAppContext } from '@/context/AppContext';
 import PropertyCard from '@/components/PropertyCard';
 import SearchBar from '@/components/SearchBar';
@@ -6,10 +6,11 @@ import FilterPanel from '@/components/FilterPanel';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { FiFilter } from 'react-icons/fi';
 
-const PropertiesPage = () => {
+// Wrap the main content in a separate component
+function PropertiesContent() {
   const { 
     filteredProperties, 
     loading, 
@@ -78,12 +79,10 @@ const PropertiesPage = () => {
                 </div>
               ) : (
                 <>
-                  {}
-                  
                   {filteredProperties.length === 0 ? (
                     <div className="bg-white p-8 rounded-lg shadow-md text-center">
-                      <h3 className="text-xl font-medium text-gray-700 mb-2">Oops! We don’t have listings in this area yet</h3>
-                      <p className="text-gray-600">But we’re expanding soon — stay tuned!</p>
+                      <h3 className="text-xl font-medium text-gray-700 mb-2">Oops! We don't have listings in this area yet</h3>
+                      <p className="text-gray-600">But we're expanding soon — stay tuned!</p>
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -105,6 +104,13 @@ const PropertiesPage = () => {
       <Footer />
     </div>
   );
-};
+}
 
-export default PropertiesPage;
+// Main page component with Suspense boundary
+export default function PropertiesPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PropertiesContent />
+    </Suspense>
+  );
+}
