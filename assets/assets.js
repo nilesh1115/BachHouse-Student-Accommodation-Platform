@@ -269,3 +269,13 @@ export const HomeIcon = () => (
     <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="m4 12 8-8 8 8M6 10.5V19a1 1 0 0 0 1 1h3v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h3a1 1 0 0 0 1-1v-8.5" />
   </svg>
 );
+export const userDummyData = {
+  "_id": "user_2sZFHS1UIIysJyDVzCpQhUhTIhw",
+  "name": "GreatStack",
+  "email": "admin@example.com",
+  "imageUrl": "https://img.clerk.com/eyJ0eXBlIjoiZGVmYXVsdCIsImlpZCI6Imluc18ycnlnUnFiUDBYT2dEZ2h1ZmRXcGlpdWV5OXoiLCJyaWQiOiJ1c2VyXzJzWkZIUzFVSUl5c0p5RFZ6Q3BRaFVoVElodyJ9",
+  "cartItems": {
+    // "67a1f4e43f34a77b6dde9144": 3
+  },
+  "__v": 0
+}

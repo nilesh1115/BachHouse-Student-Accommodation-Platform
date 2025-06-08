@@ -67,3 +67,14 @@ export const syncUserDeletion = inngest.createFunction(
         await User.findByIdAndDelete(id);
     }
 );
+// config/inngest.js (add to existing file)
+export const syncUserRole = inngest.createFunction(
+  { id: "sync-user-role" },
+  { event: "clerk/user.updated" },
+  async ({ event }) => {
+    await connectDB();
+    await User.findByIdAndUpdate(event.data.id, {
+      role: event.data.public_metadata?.role || 'user'
+    });
+  }
+);

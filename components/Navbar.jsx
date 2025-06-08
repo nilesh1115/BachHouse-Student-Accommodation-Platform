@@ -7,13 +7,15 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useClerk, UserButton } from '@clerk/nextjs';
 import {HomeIcon} from '@/assets/assets';
+import { useUser } from "@clerk/nextjs";
 
 const Navbar = () => {
-  const { isOwner, user } = useAppContext();
+  //const { isOwner, user } = useAppContext();
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { signOut, openSignIn } = useClerk(); // Destructure openSignIn directly
+  const { signOut, openSignIn } = useClerk();
+  const { user, isLoaded } = useUser();
 
   useEffect(() => {
     setIsMounted(true);
@@ -97,14 +99,13 @@ const Navbar = () => {
             >
               Contact
             </Link>
-
-            {isMounted && isOwner && (
-              <button
-                onClick={() => router.push('/owner')}
+            {isMounted && user && (
+              <Link
+                href="/owner"
                 className="text-sm border border-[#5e17eb] text-[#5e17eb] px-4 py-1.5 rounded-full hover:bg-[#5e17eb] hover:text-white transition"
               >
                 Owner Dashboard
-              </button>
+              </Link>
             )}
           </div>
 
@@ -165,7 +166,7 @@ const Navbar = () => {
                 >
                   Contact
                 </button>
-                {isMounted && isOwner && (
+                {isMounted && user && (
                   <button
                     onClick={() => handleNavigation('/owner')}
                     className="text-left px-4 py-3 hover:bg-gray-100 rounded-lg text-gray-700 font-medium"
@@ -191,7 +192,7 @@ const Navbar = () => {
                       width={18}
                       height={18}
                     />
-                    Login
+                    <span>Login</span>
                   </button>
                 )}
               </div>

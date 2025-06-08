@@ -2,13 +2,17 @@
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState, useMemo } from "react";
 import { properties as initialProperties } from "@/assets/assets";
-import { useUser } from "@clerk/nextjs";
+import { useUser,useAuth} from "@clerk/nextjs";
+import { userDummyData } from "@/assets/assets";
+import { get } from "mongoose";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 // Define default context value
 const defaultContextValue = {
   properties: [],
   filteredProperties: [],
-  userData: null,
+  userData: false,
   isOwner: false,
   favorites: {},
   loading: true,
@@ -47,9 +51,29 @@ export const AppContextProvider = ({ children }) => {
   const router = useRouter();
   const { user } = useUser();
 
+  const fetchUserData = async () => {
+    try {
+      if(user.publicMetadata.role ==='owner'){
+      setIsOwner(true);
+    }
+    const token = await getToken();
+    const {data} =await axios.get('/api/user/data',{headers: { Authorization: `Bearer ${token}` }});
+
+      if (data.success) {
+        setUserData(data.user);
+      }else {
+        toast.error(data.message );
+      }
+
+    } catch (error) {
+              toast.error(error.message );
+
+    }
+  };
+  const {getToken} = useAuth();
   const [properties, setProperties] = useState([]);
   const [filteredProperties, setFilteredProperties] = useState([]);
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
   const [favorites, setFavorites] = useState({});
   const [loading, setLoading] = useState(true);
@@ -165,11 +189,24 @@ export const AppContextProvider = ({ children }) => {
   const updateFilters = (newFilters) => {
     setFilters(prev => ({ ...prev, ...newFilters }));
   };
+  //setch user data
+  useEffect(() => {
+    if (user) {
+  fetchUserData();
+  if (user?.publicMetadata?.role === 'owner') {
+    setIsOwner(true);
+  } else {
+    setIsOwner(false);
+  }
+}
+  }, [user]);
 
   const contextValue = useMemo(() => ({
     properties,
     filteredProperties,
     userData,
+    getToken,
+    fetchUserData,
     setUserData,
     isOwner,
     setIsOwner,

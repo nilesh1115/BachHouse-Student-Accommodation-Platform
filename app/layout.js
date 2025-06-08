@@ -4,7 +4,6 @@ import { AppContextProvider } from "@/context/AppContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ClerkProvider } from "@clerk/nextjs";
-
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
