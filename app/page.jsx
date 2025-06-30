@@ -6,7 +6,6 @@ import FeaturedProperties from "@/components/FeaturedProperties";
 import Testimonials from "@/components/Testimonials";
 import Footer from "@/components/Footer";
 
-
 const Home = () => {
   return (
     <div className="flex flex-col min-h-screen">
@@ -16,11 +15,10 @@ const Home = () => {
         <HowItWorks/>
         <FeaturedProperties />
         <Testimonials/>
-        
       </main>
       <Footer/>
     </div>
   );
 };
 
-export default Home;
+export default Home; 

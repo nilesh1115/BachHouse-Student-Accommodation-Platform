@@ -17,23 +17,50 @@ useEffect(() => {
 }, []);
 
 const [showSuggestions, setShowSuggestions] = useState(false);
-const [suggestions] = useState([
+  const popularLocations = ['DIT Pimpri', 'DPU', 'Sant Tukaram Nagar', 'Pune Hinjewadi'];
+  const allSuggestions = [
+    ...popularLocations,
   "Pimpri",
   "DPU",
-  "Pune Hinjewadi",
+    "Pune Hingewadi",
   "Nehru Nagar",
   "Sant Tukaram Nagar",
   "Akurdi",
-  "Pune",
-]);
+    "Vallabhnagar",
+    "Pune"
+  ];
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchTerm.trim()) {
+      updateFilters({ 
+        location: searchTerm.trim(),
+        hasSearched: true
+      });
       router.push(`/all-properties?location=${encodeURIComponent(searchTerm.trim())}`);
+      setShowSuggestions(false);
     }
   };
-{/* Handle search on Enter key press */}
+
+  const clearSearch = () => {
+    setSearchTerm('');
+    setShowSuggestions(false);
+    updateFilters({ 
+      location: '',
+      hasSearched: false
+    });
+  };
+
+  const handleQuickSearch = (location) => {
+    setSearchTerm(location);
+    updateFilters({
+      location,
+      hasSearched: true
+    });
+    router.push(`/all-properties?location=${encodeURIComponent(location)}`);
+    setShowSuggestions(false);
+  };
+
   if (!isMounted) {
     return (
       <section className="relative h-[500px] md:h-[600px] w-full">
@@ -60,7 +87,7 @@ const [suggestions] = useState([
       </section>
     );
   }
-{/* Render the hero section with the search bar and background image */}
+
   return (
     <section className="relative h-[500px] md:h-[600px] w-full">
       <Image
@@ -114,7 +141,7 @@ const [suggestions] = useState([
                 {/* Suggestions dropdown */}
                 {showSuggestions && (
                   <div className="absolute z-10 mt-1 w-full bg-white rounded-lg shadow-lg max-h-60 overflow-auto">
-                    {suggestions
+                    {allSuggestions
                       .filter(suggestion => 
                         suggestion.toLowerCase().includes(searchTerm.toLowerCase())
                       )
@@ -122,10 +149,7 @@ const [suggestions] = useState([
                         <div
                           key={index}
                           className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
-                          onMouseDown={() => {
-                            setSearchTerm(suggestion);
-                            setShowSuggestions(false);
-                          }}
+                          onMouseDown={() => handleQuickSearch(suggestion)}
                         >
                           <FiMapPin size={14} className="mr-2 text-gray-400" />
                           <span className="text-gray-500">{suggestion}</span>
@@ -136,6 +160,21 @@ const [suggestions] = useState([
                 )}
               </div>
             </form>
+
+            {/* Location Quick Links */}
+            <div className="flex flex-wrap gap-2 mt-3">
+              {popularLocations.map((location) => (
+                <button 
+                  key={location}
+                  type="button"
+                  onClick={() => handleQuickSearch(location)}
+                  className="text-xs sm:text-sm bg-white/10 hover:bg-white/20 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg transition-colors duration-200 flex items-center"
+                >
+                  <FiMapPin size={12} className="mr-1" />
+                  {location}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>

@@ -1,28 +1,48 @@
 'use client'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAppContext } from '@/context/AppContext';
 import { FiSearch, FiMapPin, FiX } from 'react-icons/fi';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 const SearchBar = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const { updateFilters } = useAppContext();
+
+  // Initialize search term from URL
+  useEffect(() => {
+    const location = searchParams.get('location');
+    if (location) {
+      setSearchTerm(location);
+    }
+  }, [searchParams]);
 
   const popularLocations = ['DIT Pimpri', 'DPU', 'Sant Tukaram Nagar', 'Pune Hinjewadi'];
   const allSuggestions = [
     ...popularLocations,
     "Pimpri",
-  "DPU",
-  "Pune Hingewadi",
+  "near DPU Medical College",
+  "near DIT College",
+  "near DY Patil Enginnering College",
+  "near YCM",
+  "kharalwadi",
+  "near Shani  chowk",
   "Nehru Nagar",
   "Sant Tukaram Nagar",
-  "Akurdi",
-  "Pune"
+  "Vallabhnagar",
   ];
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchTerm.trim()) {
+      // Update URL with new search term
+      const params = new URLSearchParams(searchParams.toString());
+      params.set('location', searchTerm.trim());
+      router.push(`/all-properties?${params.toString()}`);
+
+      // Update filters
       updateFilters({ 
         location: searchTerm.trim(),
         hasSearched: true
@@ -34,6 +54,13 @@ const SearchBar = () => {
   const clearSearch = () => {
     setSearchTerm('');
     setShowSuggestions(false);
+    
+    // Clear URL parameter
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete('location');
+    router.push(`/all-properties?${params.toString()}`);
+
+    // Update filters
     updateFilters({ 
       location: '',
       hasSearched: false
@@ -42,6 +69,13 @@ const SearchBar = () => {
 
   const handleQuickSearch = (location) => {
     setSearchTerm(location);
+    
+    // Update URL with selected location
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('location', location);
+    router.push(`/all-properties?${params.toString()}`);
+
+    // Update filters
     updateFilters({
       location,
       hasSearched: true

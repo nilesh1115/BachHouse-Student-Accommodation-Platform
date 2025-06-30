@@ -90,18 +90,60 @@ export const AppContextProvider = ({ children }) => {
     hasSearched: false,
     location: null
   });
+  const [error, setError] = useState(null);
+
+  const fetchProperties = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get('/api/property/list');
+      
+      if (Array.isArray(response.data)) {
+        // Transform the properties to match the expected format
+        const transformedProperties = response.data.map(property => ({
+          _id: property._id,
+          id: property._id, // Add id for backward compatibility
+          name: property.name || '',
+          title: property.title || property.name || '', // Use title if available, fallback to name
+          description: property.description || '',
+          type: property.type || property.proptype || '', // Use type first, then proptype as fallback
+          proptype: property.proptype || property.type || '', // Keep both for compatibility
+          rent: typeof property.rent === 'number' ? property.rent : 0,
+          price: typeof property.price === 'number' ? property.price : (typeof property.rent === 'number' ? property.rent : 0), // Use price if available
+          deposit: typeof property.deposit === 'number' ? property.deposit : 0,
+          gender: property.gender || '',
+          location: property.location || '',
+          address: property.address || '',
+          amenities: Array.isArray(property.amenities) ? property.amenities : [],
+          image: Array.isArray(property.image) ? property.image : [],
+          images: Array.isArray(property.image) ? property.image : [], // Add images for backward compatibility
+          occupancy: property.occupancy || '',
+          date: property.date || new Date()
+        }));
+
+        console.log('Fetched properties count:', transformedProperties.length);
+        setProperties(transformedProperties);
+        setFilteredProperties(transformedProperties);
+        setError(null);
+      } else {
+        console.error('Invalid response format:', response.data);
+        setError('Invalid response format from server');
+      }
+    } catch (err) {
+      console.error('Error fetching properties:', err);
+      setError(err.response?.data?.message || 'Failed to fetch properties');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Initialize data
   useEffect(() => {
     try {
       const storedFavorites = JSON.parse(localStorage.getItem('favorites')) || {};
-      setProperties(initialProperties || []);
-      setFilteredProperties(initialProperties || []);
       setFavorites(storedFavorites);
-      setLoading(false);
+      fetchProperties(); // Fetch properties on initial load
     } catch (error) {
       console.error("Failed to load initial data:", error);
-      setLoading(false);
     }
   }, []);
 
@@ -117,65 +159,53 @@ export const AppContextProvider = ({ children }) => {
     }
   }, [userData]);
 
-  // Apply filters when they change
+  // Update filtered properties when filters change
   useEffect(() => {
-    if (properties.length > 0) {
-      applyFilters();
-    }
-  }, [filters, properties]);
+    let filtered = [...properties];
 
-  const applyFilters = () => {
-    let result = [...properties];
-    
-    if (filters.hasSearched) {
-      if (filters.location) {
-        const searchTerm = filters.location.toLowerCase();
-        result = result.filter(property => 
-          property.location.toLowerCase().includes(searchTerm) ||
-          property.title.toLowerCase().includes(searchTerm)
-        );
-      }
-      
-      if (filters.gender) {
-        result = result.filter(property => property.gender === filters.gender || property.gender === 'Unisex');
-      }
-      
-      result = result.filter(property => 
-        property.price >= filters.minPrice && property.price <= filters.maxPrice
+    // Apply location filter
+    if (filters.location) {
+      filtered = filtered.filter(property => 
+        property.location.toLowerCase().includes(filters.location.toLowerCase())
       );
-      
-      if (filters.type) {
-        result = result.filter(property => property.type === filters.type);
-      }
-      
-      result = result.filter(property => property.distance <= filters.distance);
-      
-      if (filters.sharing) {
-        result = result.filter(property => property.sharing.includes(filters.sharing));
-      }
-      
-      if (filters.amenities.length > 0) {
-        result = result.filter(property => 
-          filters.amenities.every(amenity => property.amenities.includes(amenity))
-        );
-      }
-      
-      if (filters.furnishing) {
-        result = result.filter(property => property.furnishing === filters.furnishing);
-      }
-      
-      if (filters.availableFrom) {
-        result = result.filter(property => new Date(property.availableFrom) >= new Date(filters.availableFrom));
-      }
-    } else {
-      result = [];
     }
-    
-    setFilteredProperties(result);
+
+    // Apply gender filter
+    if (filters.gender) {
+      filtered = filtered.filter(property => 
+        property.gender.toLowerCase() === filters.gender.toLowerCase()
+      );
+    }
+
+    // Apply price range filter
+    if (filters.minPrice > 0 || filters.maxPrice < 100000) {
+      filtered = filtered.filter(property => 
+        property.rent >= filters.minPrice && property.rent <= filters.maxPrice
+      );
+    }
+
+    // Apply type filter
+    if (filters.type) {
+      filtered = filtered.filter(property => 
+        property.type.toLowerCase() === filters.type.toLowerCase()
+      );
+    }
+
+    setFilteredProperties(filtered);
+  }, [properties, filters]);
+
+  const updateFilters = (newFilters) => {
+    setFilters(prev => ({
+      ...prev,
+      ...newFilters
+    }));
   };
 
   const addToFavorites = (propertyId) => {
-    setFavorites(prev => ({ ...prev, [propertyId]: true }));
+    setFavorites(prev => ({
+      ...prev,
+      [propertyId]: true
+    }));
   };
 
   const removeFromFavorites = (propertyId) => {
@@ -186,9 +216,6 @@ export const AppContextProvider = ({ children }) => {
     });
   };
 
-  const updateFilters = (newFilters) => {
-    setFilters(prev => ({ ...prev, ...newFilters }));
-  };
   //setch user data
   useEffect(() => {
     if (user) {
@@ -217,8 +244,10 @@ export const AppContextProvider = ({ children }) => {
     router,
     filters,
     updateFilters,
-    user // Include user from Clerk in context
-  }), [properties, filteredProperties, userData, isOwner, favorites, loading, router, filters, user]);
+    user,
+    error,
+    refreshProperties: fetchProperties
+  }), [properties, filteredProperties, userData, isOwner, favorites, loading, router, filters, user, error]);
 
   return (
     <AppContext.Provider value={contextValue}>

@@ -6,6 +6,17 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
+const LOCATIONS = [
+  'Sant Tukaram Nagar',
+  'Nehru Nagar',
+  'YCM',
+  'Vallabhnagar',
+  'Shiv Mandir',
+  'Near DY Patil Engineering',
+  'Maitri Chowk',
+  'Near DPU Medical'
+];
+
 export default function AddProperty() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -33,18 +44,55 @@ export default function AddProperty() {
     laundry: false,
   });
 
-  const [description, setDescription] = useState('');
-  const [propertyType, setPropertyType] = useState('room');
-  const [occupancy, setOccupancy] = useState('1');
-  const [gender, setGender] = useState('male');
-  const [propertyTitle, setPropertyTitle] = useState('');
+  const [formData, setFormData] = useState({
+    title: '',
+    name: '',
+    description: '',
+    location: '',
+    type: 'room',
+    gender: 'male',
+    rent: '',
+    deposit: '',
+    occupancy: '1',
+    image: [],
+    amenities: [],
+    rules: [],
+    ownerName: '',
+    phone: '',
+    whatsappNumber: '',
+    email: '',
+    available: true,
+    distance: '',
+    furnishing: 'Furnished',
+    ownerPhone: '',
+    price: '',
+    address: '',
+  });
+
+  const [error, setError] = useState(null);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => {
+      const newData = {
+        ...prev,
+        [name]: value
+      };
+      // If name is being updated, also update title
+      if (name === 'name') {
+        newData.title = value;
+      }
+      return newData;
+    });
+  };
 
   const handleImageUpload = useCallback((e) => {
     const files = Array.from(e.target.files);
     const newImages = files.map(file => ({
       url: URL.createObjectURL(file),
       name: file.name,
-      size: file.size
+      size: file.size,
+      file: file // Store the actual file object
     }));
     setImages(prev => [...prev, ...newImages].slice(0, 10));
   }, []);
@@ -56,71 +104,135 @@ export default function AddProperty() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    const form = e.target;
-    const formData = new FormData();
+    setError(null);
+
+    // Validate required fields
+    const requiredFields = {
+      title: 'Property Title',
+      name: 'Property Name',
+      description: 'Description',
+      location: 'Location',
+      type: 'Property Type',
+      gender: 'Gender',
+      rent: 'Rent',
+      ownerName: 'Owner Name',
+      phone: 'Phone Number',
+      whatsappNumber: 'WhatsApp Number'
+    };
+
+    const missingFields = Object.entries(requiredFields)
+      .filter(([key]) => !formData[key])
+      .map(([_, label]) => label);
+
+    if (missingFields.length > 0) {
+      toast.error(`Please fill in all required fields: ${missingFields.join(', ')}`);
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Validate images
+    if (images.length === 0) {
+      toast.error('Please upload at least one image');
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
-      formData.append('name', propertyTitle);
-      formData.append('description', description);
-      formData.append('type', propertyType);
-      formData.append('occupancy', occupancy);
-      formData.append('rent', form.rent.value);
-      formData.append('deposit', form.deposit.value || '0');
-      formData.append('gender', gender);
-      formData.append('address', form.address.value);
-
-      const selectedAmenities = Object.entries(amenities)
-        .filter(([_, value]) => value)
-        .map(([key]) => key);
-      formData.append('amenities', selectedAmenities.join(','));
-
-      const imageInput = form.querySelector('input[type="file"]');
-      Array.from(imageInput.files).forEach((file) => {
-        formData.append('images', file);
-      });
-
-      const { data } = await axios.post('/api/property/add', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
-      });
+      // Create FormData object
+      const formDataToSend = new FormData();
       
-      if (data.success) {
-        toast.success(data.message);
-        setImages([]);
-        setAmenities({
-          bed: false,
-          cupboard: false,
-          geyser: false,
-          Water_availability_24_7: false,
-          hot_water: false,
-          wifi: false,
-          drinking_water: false,
-          cleaning: false,
-          balcony: false,
-          Table: false,
-          chair: false,
-          wash_basin: false,
-          Indian_toilet: false,
-          western_toilet: false,
-          rooftop_access: false,
-          security: false,
-          parking: false,
-          ac: false,
-          kitchen: false,
-          laundry: false,
-        });
-        setDescription('');
-        setPropertyType('room');
-        setOccupancy('1');
-        setPropertyTitle('');
-        setGender('male');
-        form.reset();
-      } else {
-        toast.error(data.message);
+      // Map form fields to required database fields
+      const propertyData = {
+        title: formData.name,
+        name: formData.name,
+        description: formData.description,
+        location: formData.location,
+        type: formData.type,
+        proptype: formData.type,
+        gender: formData.gender,
+        rent: Number(formData.rent) || Number(formData.price) || 0,
+        price: Number(formData.price) || Number(formData.rent) || 0,
+        deposit: Number(formData.deposit) || 0,
+        occupancy: formData.occupancy || '1',
+        amenities: Array.isArray(formData.amenities) ? formData.amenities : [],
+        rules: Array.isArray(formData.rules) ? formData.rules : [],
+        ownerName: formData.ownerName,
+        phone: formData.phone,
+        ownerPhone: formData.phone,
+        whatsappNumber: formData.whatsappNumber,
+        email: formData.email || '',
+        available: formData.available !== false,
+        distance: formData.distance || '',
+        furnishing: formData.furnishing || 'Furnished',
+        address: formData.address || '',
+        date: new Date()
+      };
+
+      // Append all property data
+      Object.keys(propertyData).forEach(key => {
+        if (propertyData[key] !== undefined && propertyData[key] !== null) {
+          if (Array.isArray(propertyData[key])) {
+            formDataToSend.append(key, JSON.stringify(propertyData[key]));
+          } else {
+            formDataToSend.append(key, propertyData[key]);
+          }
+        }
+      });
+
+      // Append images
+      images.forEach((image) => {
+        if (image.file) {
+          formDataToSend.append('images', image.file);
+        }
+      });
+
+      console.log('Sending form data with images:', images.length);
+
+      const response = await fetch('/api/property/add', {
+        method: 'POST',
+        body: formDataToSend,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to add property');
       }
-    } catch (error) {
-      toast.error(error.response?.data?.message || error.message);
+
+      toast.success(data.message || 'Property added successfully!');
+      
+      // Reset form
+      setFormData({
+        title: '',
+        name: '',
+        description: '',
+        location: '',
+        type: 'room',
+        gender: 'male',
+        rent: '',
+        deposit: '',
+        occupancy: '1',
+        image: [],
+        amenities: [],
+        rules: [],
+        ownerName: '',
+        phone: '',
+        whatsappNumber: '',
+        email: '',
+        available: true,
+        distance: '',
+        furnishing: 'Furnished',
+        ownerPhone: '',
+        price: '',
+        address: '',
+        });
+      setImages([]);
+      
+      router.push('/owner/my-listings');
+    } catch (err) {
+      console.error('Error adding property:', err);
+      setError(err.message);
+      toast.error(err.message || 'Failed to add property');
     } finally {
       setIsSubmitting(false);
     }
@@ -141,23 +253,36 @@ export default function AddProperty() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
           <div className="space-y-1">
             <div className="flex justify-between items-end">
-              <label className="block text-xs sm:text-sm font-medium text-gray-700">Property Name *</label>
+              <label className="block text-xs sm:text-sm font-medium text-gray-700">Property Name/Title *</label>
               <span className="text-xs text-gray-500">
-                <span className="text-gray-700 font-medium">{propertyTitle.length}</span>/50
+                <span className="text-gray-700 font-medium">{formData.name.length}</span>/50
               </span>
             </div>
             <input 
               type="text" 
+              name="name"
               className="w-full text-gray-700 px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:border-2 focus:border-blue-500 focus:outline-none transition-colors"  
               placeholder="1 BHK Flat in XYZ"
-              value={propertyTitle}
-              onChange={(e) => {
-                if (e.target.value.length <= 50) {
-                  setPropertyTitle(e.target.value);
-                }
-              }}
+              value={formData.name}
+              onChange={handleChange}
               required 
             />
+          </div>
+
+          <div className="space-y-1">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700">Location *</label>
+            <select 
+              name="location"
+              className="w-full text-gray-700 px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:border-2 focus:ring-blue-500 focus:border-blue-500"
+              value={formData.location}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select Location</option>
+              {LOCATIONS.map((loc) => (
+                <option key={loc} value={loc}>{loc}</option>
+              ))}
+            </select>
           </div>
         </div>
 
@@ -165,9 +290,10 @@ export default function AddProperty() {
           <div className="space-y-1">
             <label className="block text-xs sm:text-sm font-medium text-gray-700">Property Type *</label>
             <select 
+              name="type"
               className="w-full text-gray-700 px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:border-2 focus:ring-blue-500 focus:border-blue-500"
-              value={propertyType}
-              onChange={(e) => setPropertyType(e.target.value)}
+              value={formData.type}
+              onChange={handleChange}
               required
             >
               <option value="room">Room</option>
@@ -179,9 +305,10 @@ export default function AddProperty() {
           <div className="space-y-1">
             <label className="block text-xs sm:text-sm font-medium text-gray-700">Total Occupancy</label>
             <select 
+              name="occupancy"
               className="w-full text-gray-700 px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:border-2 focus:ring-blue-500 focus:border-blue-500"
-              value={occupancy}
-              onChange={(e) => setOccupancy(e.target.value)}
+              value={formData.occupancy}
+              onChange={handleChange}
             >
               <option value="1">1 Person</option>
               <option value="2">2 Sharing</option>
@@ -218,7 +345,6 @@ export default function AddProperty() {
                 onChange={handleImageUpload}
                 accept="image/jpeg, image/png"
                 multiple
-                required
               />
             </div>
           </label>
@@ -259,6 +385,8 @@ export default function AddProperty() {
             <input 
               type="number" 
               name="rent"
+              value={formData.rent}
+              onChange={handleChange}
               className="w-full text-gray-700 px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:border-2 focus:border-blue-500 focus:outline-none transition-colors"  
               placeholder="e.g.₹3000"
               required 
@@ -270,6 +398,8 @@ export default function AddProperty() {
             <input 
               type="number" 
               name="deposit"
+              value={formData.deposit}
+              onChange={handleChange}
               placeholder="e.g.₹ 3000" 
               className="w-full text-gray-700 px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:border-2 focus:border-blue-500 focus:outline-none transition-colors" 
               min="0"
@@ -278,12 +408,13 @@ export default function AddProperty() {
         </div>
 
         <div className="space-y-1">
-          <label className="block text-xs sm:text-sm font-medium text-gray-700">Preferred Tenant Gender</label>
+          <label className="block text-xs sm:text-sm font-medium text-gray-700">Preferred Tenant Gender *</label>
           <select 
             name="gender"
-            value={gender}
-            onChange={(e) => setGender(e.target.value)}
+            value={formData.gender}
+            onChange={handleChange}
             className="w-full text-gray-700 px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:border-2 focus:ring-blue-500 focus:border-blue-500"
+            required
           >
             <option value="male">Male</option>
             <option value="female">Female</option>
@@ -314,19 +445,16 @@ export default function AddProperty() {
           <div className="flex justify-between items-end">
             <label className="block text-xs sm:text-sm font-medium text-gray-700">Property Description *</label>
             <span className="text-xs text-gray-500">
-              <span className="text-gray-700 font-medium">{description.length}</span>/500
+              <span className="text-gray-700 font-medium">{formData.description.length}</span>/500
             </span>
           </div>
           <textarea 
+            name="description"
             rows={3}
             className="w-full text-gray-700 px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:border-2 focus:border-blue-500 focus:outline-none transition-colors" 
             placeholder="Describe your property in detail..."
-            value={description}
-            onChange={(e) => {
-              if (e.target.value.length <= 500) {
-                setDescription(e.target.value);
-              }
-            }}
+            value={formData.description}
+            onChange={handleChange}
             required
           />
         </div>
@@ -340,6 +468,70 @@ export default function AddProperty() {
             placeholder="Enter full address" 
             required 
           />
+        </div>
+
+        {/* Contact Information Section */}
+        <div className="space-y-4 sm:space-y-6">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Contact Information</h2>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+            <div className="space-y-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700">Owner Name *</label>
+              <input 
+                type="text" 
+                name="ownerName"
+                value={formData.ownerName}
+                onChange={handleChange}
+                className="w-full text-gray-700 px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:border-2 focus:border-blue-500 focus:outline-none transition-colors" 
+                placeholder="Enter owner name" 
+                required 
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700">Phone Number *</label>
+              <input 
+                type="tel" 
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                className="w-full text-gray-700 px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:border-2 focus:border-blue-500 focus:outline-none transition-colors" 
+                placeholder="Enter phone number" 
+                pattern="[0-9]{10}"
+                title="Please enter a valid 10-digit phone number"
+                required 
+              />
+              <p className="text-xs text-gray-500">Enter 10-digit mobile number</p>
+            </div>
+
+            <div className="space-y-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700">WhatsApp Number *</label>
+              <input 
+                type="tel" 
+                name="whatsappNumber"
+                value={formData.whatsappNumber}
+                onChange={handleChange}
+                className="w-full text-gray-700 px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:border-2 focus:border-blue-500 focus:outline-none transition-colors" 
+                placeholder="Enter WhatsApp number" 
+                pattern="[0-9]{10}"
+                title="Please enter a valid 10-digit WhatsApp number"
+                required 
+              />
+              <p className="text-xs text-gray-500">Enter 10-digit WhatsApp number</p>
+            </div>
+
+            <div className="space-y-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700">Email Address</label>
+              <input 
+                type="email" 
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full text-gray-700 px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:border-2 focus:border-blue-500 focus:outline-none transition-colors" 
+                placeholder="Enter email address" 
+              />
+            </div>
+          </div>
         </div>
 
         <div className="flex justify-end pt-3 sm:pt-4">

@@ -43,7 +43,29 @@ const PropertyDetails = () => {
           throw new Error('Failed to fetch property details');
         }
         const data = await response.json();
-        setProperty(data);
+        // Transform the property data to match the expected format
+        const transformedProperty = {
+          ...data,
+          id: data._id,
+          title: data.name || data.title || 'Untitled Property',
+          price: typeof data.rent === 'number' ? data.rent : 0,
+          rent: typeof data.rent === 'number' ? data.rent : 0,
+          deposit: typeof data.deposit === 'number' ? data.deposit : 0,
+          images: Array.isArray(data.image) ? data.image : [],
+          image: Array.isArray(data.image) ? data.image : [],
+          amenities: Array.isArray(data.amenities) ? data.amenities : [],
+          type: data.proptype || data.type || '',
+          gender: data.gender || '',
+          location: data.location || '',
+          description: data.description || '',
+          ownerName: data.ownerName || '',
+          ownerPhone: data.phone || data.ownerPhone || '',
+          whatsappNumber: data.whatsappNumber || data.phone || data.ownerPhone || '',
+          available: data.available !== false,
+          distance: data.distance || '',
+          furnishing: data.furnishing || 'Furnished'
+        };
+        setProperty(transformedProperty);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -91,9 +113,24 @@ const PropertyDetails = () => {
 
   const getPropertyImages = () => {
     if (!property) return [];
-    if (property.images && property.images.length > 0) return property.images;
-    if (property.image) return [property.image];
-    return [];
+    
+    // Check for images array first
+    if (property.images && Array.isArray(property.images) && property.images.length > 0) {
+      return property.images.filter(img => img && typeof img === 'string' && img.trim() !== '');
+    }
+    
+    // Check for single image
+    if (property.image) {
+      if (Array.isArray(property.image) && property.image.length > 0) {
+        return property.image.filter(img => img && typeof img === 'string' && img.trim() !== '');
+      }
+      if (typeof property.image === 'string' && property.image.trim() !== '') {
+        return [property.image];
+      }
+    }
+    
+    // Return default image if no images are available
+    return ['/images/default-property.jpg'];
   }
 
   const propertyImages = getPropertyImages();
@@ -172,12 +209,15 @@ const PropertyDetails = () => {
                   className={`absolute inset-0 transition-opacity duration-300 ${index === currentImageIndex ? 'opacity-100' : 'opacity-0'}`}
                 >
                   <Image
-                    src={img}
+                    src={img || '/images/default-property.jpg'}
                     alt={`Property image ${index + 1}`}
                     fill
                     className="object-cover"
                     priority={index === 0}
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
+                    onError={(e) => {
+                      e.currentTarget.src = '/images/default-property.jpg';
+                    }}
                   />
                 </div>
               ))}
@@ -238,15 +278,15 @@ const PropertyDetails = () => {
           <div className="lg:w-2/3">
             <div className="bg-white p-5 rounded-lg shadow-sm">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
-                <h1 className="text-2xl font-bold text-gray-800">{property.title}</h1>
+                <h1 className="text-2xl font-bold text-gray-800">{property.title || property.name || 'Untitled Property'}</h1>
                 
                 {/* Desktop Pricing */}
                 <div className="hidden sm:flex flex-col items-end">
                   <div className="bg-blue-50 px-3 py-1.5 rounded-lg">
-                    <span className="text-blue-600 font-bold text-lg">₹{property.price.toLocaleString()}</span>
+                    <span className="text-blue-600 font-bold text-lg">₹{property.rent?.toLocaleString() || property.price?.toLocaleString() || '0'}</span>
                     <span className="text-blue-500 text-xs ml-1">/month</span>
                   </div>
-                  {property.deposit && (
+                  {property.deposit > 0 && (
                     <div className="bg-purple-50 px-2 py-1 rounded-md mt-1 inline-block">
                       <p className="text-purple-700 text-sm font-medium">
                         Deposit: ₹{property.deposit.toLocaleString()}
@@ -259,10 +299,10 @@ const PropertyDetails = () => {
                 <div className="sm:hidden w-full bg-blue-50 p-3 rounded-lg mt-2">
                   <div className="flex justify-between items-center">
                     <div>
-                      <span className="text-blue-600 font-bold text-lg">₹{property.price.toLocaleString()}</span>
+                      <span className="text-blue-600 font-bold text-lg">₹{property.rent?.toLocaleString() || property.price?.toLocaleString() || '0'}</span>
                       <span className="text-blue-500 text-xs ml-1">/month</span>
                     </div>
-                    {property.deposit && (
+                    {property.deposit > 0 && (
                       <div className="bg-purple-50 px-2 py-1 rounded-md">
                         <p className="text-purple-700 text-sm font-medium">
                           ₹{property.deposit.toLocaleString()} deposit
@@ -350,12 +390,12 @@ const PropertyDetails = () => {
 
               {/* Similar Properties Section */}
               <div className="mb-6">
-                <h2 className="text-lg font-semibold text-gray-800 mb-4">Similar Properties in {property.location}</h2>
+                <h2 className="text-lg font-semibold text-gray-800 mb-4">Similar Properties in {property?.location}</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {properties
-                    .filter(p => 
-                      p.id !== property.id && 
-                      p.location === property.location
+                    ?.filter(p => 
+                      p.id !== property?.id && 
+                      p.location === property?.location
                     )
                     .slice(0, 3)
                     .map(similarProperty => (
@@ -366,11 +406,20 @@ const PropertyDetails = () => {
                         {/* Property Image */}
                         <div className="relative h-48 w-full">
                           <Image
-                            src={similarProperty.image}
-                            alt={similarProperty.title}
+                            src={
+                              (similarProperty?.images?.[0] && typeof similarProperty.images[0] === 'string' && similarProperty.images[0].trim() !== '') 
+                                ? similarProperty.images[0] 
+                                : (similarProperty?.image && typeof similarProperty.image === 'string' && similarProperty.image.trim() !== '')
+                                  ? similarProperty.image
+                                  : '/images/default-property.jpg'
+                            }
+                            alt={similarProperty.title || 'Property image'}
                             fill
                             className="object-cover"
                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            onError={(e) => {
+                              e.currentTarget.src = '/images/default-property.jpg';
+                            }}
                           />
                           {/* Favorite Button */}
                           <button
@@ -400,18 +449,18 @@ const PropertyDetails = () => {
                           {/* Price and Location */}
                           <div className="flex items-center justify-between mb-3">
                             <div className="bg-blue-50 px-2 py-1 rounded-md">
-                              <span className="text-blue-600 font-bold">₹{similarProperty.price.toLocaleString()}</span>
+                              <span className="text-blue-600 font-bold">₹{similarProperty?.price?.toLocaleString() || '0'}</span>
                               <span className="text-blue-500 text-xs ml-1">/month</span>
                             </div>
                             <div className="flex items-center text-gray-600 text-sm">
                               <FiMapPin className="mr-1" size={14} />
-                              <span>{similarProperty.distance} km</span>
+                              <span>{similarProperty?.distance || '0'} km</span>
                             </div>
                           </div>
 
                           {/* Amenities */}
                           <div className="flex flex-wrap gap-2 mb-4">
-                            {similarProperty.amenities.slice(0, 2).map((amenity, index) => (
+                            {similarProperty?.amenities?.slice(0, 2).map((amenity, index) => (
                               <div 
                                 key={index} 
                                 className="flex items-center px-2 py-1 bg-gray-50 text-gray-700 text-xs font-medium rounded-md"
@@ -445,35 +494,39 @@ const PropertyDetails = () => {
               
               <div className="space-y-4">
                 {/* Phone Call Button */}
-                <a 
-                  href={`tel:+91${property.ownerPhone}`}
-                  className="flex items-center justify-center p-3 bg-[#0066cc] hover:bg-blue-700 text-white rounded-lg transition-colors duration-200"
-                >
-                  <FiPhone className="mr-3" size={18} />
-                  <span>Call Owner</span>
-                </a>
+                {property.ownerPhone && (
+                  <a 
+                    href={`tel:+91${property.ownerPhone.replace(/\D/g, '')}`}
+                    className="flex items-center justify-center p-3 bg-[#0066cc] hover:bg-blue-700 text-white rounded-lg transition-colors duration-200"
+                  >
+                    <FiPhone className="mr-3" size={18} />
+                    <span>Call Owner</span>
+                  </a>
+                )}
                 
                 {/* WhatsApp Button */}
-                <a 
-                  href={`https://wa.me/91${property.ownerPhone}?text=Hi ${property.ownerName}, I'm interested in your property ${property.title} at ${property.location}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex text-lg items-center justify-center p-3 bg-[#25D366] hover:bg-green-600 text-white rounded-lg transition-colors duration-200"
-                >
-                  <FaWhatsapp className="mr-3" size={18} />
-                  <span>WhatsApp</span>
-                </a>
+                {property.whatsappNumber && (
+                  <a 
+                    href={`https://wa.me/91${property.whatsappNumber.replace(/\D/g, '')}?text=Hi ${property.ownerName}, I'm interested in your property ${property.title} at ${property.location}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex text-lg items-center justify-center p-3 bg-[#25D366] hover:bg-green-600 text-white rounded-lg transition-colors duration-200"
+                  >
+                    <FaWhatsapp className="mr-3" size={18} />
+                    <span>WhatsApp</span>
+                  </a>
+                )}
                 
                 {/* Owner Info */}
                 <div className="mt-6 pt-4 border-t border-gray-100">
                   <div className="flex items-center mb-3">
                     <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
                       <span className="text-gray-600 font-medium text-sm">
-                        {property.ownerName.split(' ').map(n => n[0]).join('')}
+                        {property.ownerName?.split(' ').map(n => n[0]).join('') || '?'}
                       </span>
                     </div>
                     <div>
-                      <h3 className="text-base font-medium text-gray-800">{property.ownerName}</h3>
+                      <h3 className="text-base font-medium text-gray-800">{property.ownerName || 'Property Owner'}</h3>
                       <p className="text-gray-500 text-sm">Property Owner</p>
                     </div>
                   </div>
@@ -493,4 +546,4 @@ const PropertyDetails = () => {
   )
 }
 
-export default PropertyDetails
+export default PropertyDetails 
