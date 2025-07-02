@@ -2,9 +2,9 @@
 import { SignIn } from "@clerk/nextjs";
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from "@clerk/nextjs";
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 
-export default function SignInPage() {
+function SignInContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { isLoaded, isSignedIn } = useAuth();
@@ -49,4 +49,16 @@ export default function SignInPage() {
       </div>
     </div>
   );
-} 
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    }>
+      <SignInContent />
+    </Suspense>
+  );
+}
