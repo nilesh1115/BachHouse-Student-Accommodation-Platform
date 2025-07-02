@@ -20,6 +20,7 @@ export async function GET(request, { params }) {
       name: property.name || 'Unnamed Property',
       description: property.description || '',
       location: property.location || 'Location not specified',
+      address: property.address || '',
       type: property.type || 'Type not specified',
       gender: property.gender || 'Not specified',
       rent: property.rent || 0,

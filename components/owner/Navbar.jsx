@@ -20,11 +20,12 @@ export default function OwnerNavbar() {
             priority
           />
         </div>
-        
+        {/*
         <button className="flex items-center text-gray-600 hover:text-white transition-colors bg-gray-100 hover:bg-[#5e17eb] px-4 py-2 rounded-full">
           <FiLogOut className="mr-2" />
           <span className="text-sm font-medium">Logout</span>
         </button>
+        */}
       </div>
     </header>
   );

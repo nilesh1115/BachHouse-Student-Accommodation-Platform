@@ -41,6 +41,14 @@ const propertySchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    userId: {
+        type: String,
+        required: true,
+    },
+    address: {
+        type: String,
+        required: false,
+    },
 });
 
 const Property = mongoose.models.Property || mongoose.model("Property", propertySchema);

@@ -7,8 +7,8 @@ import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { 
   FiWifi, FiLock, FiDroplet, FiHome, FiUmbrella, 
-  FiCoffee, FiMonitor, FiTv, FiPhone, FiMapPin, 
-  FiChevronLeft, FiChevronRight, FiNavigation, FiArrowLeft, FiUsers, FiCalendar, FiCheck
+  FiCoffee, FiTv, FiPhone, FiMapPin, 
+  FiChevronLeft, FiChevronRight, FiNavigation, FiArrowLeft
 } from 'react-icons/fi'
 import { FaWhatsapp } from 'react-icons/fa'
 import { WhatsAppIcon, LocationIcon } from '@/assets/assets'
@@ -140,14 +140,9 @@ const PropertyDetails = () => {
       <div className="min-h-screen flex flex-col">
         <Navbar />
         <div className="flex-grow flex items-center justify-center p-4">
-          <div className="animate-pulse">
-            <div className="h-96 bg-gray-200 rounded-lg mb-8"></div>
-            <div className="h-8 bg-gray-200 rounded w-3/4 mb-4"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2 mb-8"></div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="h-64 bg-gray-200 rounded"></div>
-              <div className="h-64 bg-gray-200 rounded"></div>
-            </div>
+          <div className="flex flex-col items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+            <p className="text-gray-500 text-sm">Loading property details...</p>
           </div>
         </div>
         <Footer />
@@ -329,6 +324,12 @@ const PropertyDetails = () => {
                 <FiMapPin className="text-gray-500 mr-1.5" size={14} />
                 <span className="text-gray-700">{property.location}</span>
               </div>
+              {property.address && (
+                <div className="flex items-center mb-4 text-sm">
+                  <span className="font-medium text-gray-700">Address:</span>
+                  <span className="ml-2 text-gray-600">{property.address}</span>
+                </div>
+              )}
               
               <div className="mb-6">
                 <h2 className="text-lg font-semibold text-gray-800 mb-3">Amenities</h2>
@@ -363,7 +364,7 @@ const PropertyDetails = () => {
                     <div className="text-center p-4">
                       <FiNavigation className="mx-auto text-gray-400 mb-2" size={24} />
                       <p className="text-gray-500 text-sm">Map will be displayed here</p>
-                      <p className="text-gray-400 text-xs mt-1">(Replace with your map integration)</p>
+                      <p className="text-gray-400 text-xs mt-1">(coming soon...)</p>
                     </div>
                   </div>
                 </div>
@@ -377,7 +378,7 @@ const PropertyDetails = () => {
                 {/* Directions Button */}
                 <div className="mt-4">
                   <a
-                    href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(property.location)}`}
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(property.address || property.location)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors duration-200"

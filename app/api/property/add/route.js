@@ -54,7 +54,8 @@ export async function POST(request) {
             furnishing: formData.get('furnishing') || 'Furnished',
             address: formData.get('address') || '',
             location: formData.get('location'),
-            date: new Date()
+            date: new Date(),
+            userId: userId
         };
 
         // Validate required fields

@@ -167,6 +167,7 @@ const PropertyCard = ({ property }) => {
 
         <button 
           className="mt-auto w-full bg-[#5e17eb] hover:bg-[#4e13c7] text-white py-1.5 sm:py-2 rounded-md font-medium transition-all duration-200 flex items-center justify-center text-sm sm:text-base hover:shadow-md active:scale-95"
+          onClick={handleViewDetails}
         >
           View Details
           <svg className="h-3 w-3 sm:h-4 sm:w-4 ml-1 sm:ml-2 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">

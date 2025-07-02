@@ -17,7 +17,7 @@ useEffect(() => {
 }, []);
 
 const [showSuggestions, setShowSuggestions] = useState(false);
-  const popularLocations = ['DIT Pimpri', 'DPU', 'Sant Tukaram Nagar', 'Pune Hinjewadi'];
+  const popularLocations = ['DIT Pimpri', 'Vallabhnagar', 'Sant Tukaram Nagar', 'Nehru Nagar'];
   const allSuggestions = [
     ...popularLocations,
   "Pimpri",

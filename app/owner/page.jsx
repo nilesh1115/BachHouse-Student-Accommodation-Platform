@@ -467,6 +467,8 @@ export default function AddProperty() {
             className="w-full text-gray-700 px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:border-2 focus:border-blue-500 focus:outline-none transition-colors" 
             placeholder="Enter full address" 
             required 
+            value={formData.address}
+            onChange={handleChange}
           />
         </div>
 

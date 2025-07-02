@@ -19,7 +19,7 @@ const SearchBar = () => {
     }
   }, [searchParams]);
 
-  const popularLocations = ['DIT Pimpri', 'DPU', 'Sant Tukaram Nagar', 'Pune Hinjewadi'];
+  const popularLocations = ['DIT Pimpri', 'Nehru Nagar', 'Sant Tukaram Nagar', 'Vallabhnagar'];
   const allSuggestions = [
     ...popularLocations,
     "Pimpri",
