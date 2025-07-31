@@ -3,7 +3,7 @@ import { SignIn } from "@clerk/nextjs";
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from "@clerk/nextjs";
 import { useEffect, Suspense } from 'react';
-
+// This page handles user sign-in and redirects them after successful authentication
 function SignInContent() {
   const searchParams = useSearchParams();
   const router = useRouter();

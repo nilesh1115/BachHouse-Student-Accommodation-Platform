@@ -1,6 +1,7 @@
 import React from "react";
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+// This page provides a moving guide for bachelors, covering essential tips and checklists
 const MovingGuidePage = () => {
   return (
       <div className="bg-gradient-to-b from-blue-50 to-white min-h-screen">

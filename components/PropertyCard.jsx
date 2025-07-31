@@ -1,10 +1,9 @@
 'use client'
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { MapPin, Users, Wifi, Utensils, Droplet, Dumbbell } from 'lucide-react';
+import { MapPin, Users } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAppContext } from '@/context/AppContext';
-import { FiHeart } from 'react-icons/fi';
 
 const PropertyCard = ({ property }) => {
   const router = useRouter();
@@ -13,16 +12,6 @@ const PropertyCard = ({ property }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const isFavorite = favorites[property._id] || false;
-
-  const toggleFavorite = (e) => {
-    e.stopPropagation();
-    if (isFavorite) {
-      removeFromFavorites(property._id);
-    } else {
-      addToFavorites(property._id);
-    }
-  };
-
   const handleViewDetails = () => {
     router.push(`/property-details/${property._id}`);
   };
@@ -41,9 +30,7 @@ const PropertyCard = ({ property }) => {
 
   // Format price to show only first 4 digits
   const formatPrice = (price) => {
-    // Convert price to string if it's a number
     const priceStr = price?.toString() || '0';
-    // Extract only the first 4 digits
     const numericPrice = priceStr.replace(/[^0-9]/g, '').slice(0, 4);
     return `₹${numericPrice}/m`;
   };
@@ -110,10 +97,14 @@ const PropertyCard = ({ property }) => {
         </div>
         
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-0 mb-3 sm:mb-4">
-          <div className="flex items-center text-gray-600 hover:text-gray-900 transition-colors">
-            <MapPin className="h-3 w-3 sm:h-4 sm:w-4 mr-1 text-[#059669]" />
-            <span className="text-xs sm:text-sm">{property.location}</span>
-            {/* <span className="text-xs sm:text-sm text-gray-400 ml-1">({property.distance})</span> */}
+          <div className="flex flex-col">
+            <div className="flex items-center text-gray-600 hover:text-gray-900 transition-colors">
+              <MapPin className="h-3 w-3 sm:h-4 sm:w-4 mr-1 text-[#059669]" />
+              <span className="text-xs sm:text-sm">{property.location}</span>
+            </div>
+            {property.distance && String(property.distance).trim() !== "0" && String(property.distance).trim() !== "" && (
+              <span className="text-xs text-gray-600 mt-1 ml-4">{property.distance} from DIT college</span>
+            )}
           </div>
           
           <div className="flex">
@@ -128,42 +119,26 @@ const PropertyCard = ({ property }) => {
           </div>
         </div>
 
-        {/* Amenities: single line, max 3 on large screens, max 2 on small screens, +X if more */}
-        <div className="flex flex-nowrap gap-1.5 sm:gap-2 mb-3 sm:mb-4 overflow-hidden">
-          {property.amenities.slice(0, 2).map((amenity, index) => (
-            <div 
-              key={index} 
-              className="flex items-center border border-gray-300 rounded-full px-2 py-0.5 sm:px-3 sm:py-1 text-xs bg-white text-black hover:bg-gray-100 transition-colors"
-            >
-              {amenity === "WiFi" && <Wifi className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-1" />}
-              {amenity === "Food" && <Utensils className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-1" />}
-              {amenity === "Laundry" && <Droplet className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-1" />}
-              {amenity === "Gym" && <Dumbbell className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-1" />}
-              {amenity}
-            </div>
-          ))}
-          {/* On larger screens, show up to 3 amenities */}
-          <span className="hidden sm:flex">
-            {property.amenities.length > 2 && property.amenities.slice(2, 3).map((amenity, index) => (
-              <div 
-                key={index + 2} 
-                className="flex items-center border border-gray-300 rounded-full px-2 py-0.5 sm:px-3 sm:py-1 text-xs bg-white text-black hover:bg-gray-100 transition-colors ml-1"
+        {/* Amenities: display max 4 as badges below main info */}
+        {property.amenities && property.amenities.length > 0 && (
+          <div className="flex flex-wrap gap-1 mb-3 sm:mb-4">
+            {property.amenities.slice(0, 4).map((amenity, idx) => (
+              <span
+                key={idx}
+                className="inline-block bg-gray-100 text-gray-700 rounded-full px-2 py-0.5 text-xs border border-gray-300"
               >
-                {amenity === "WiFi" && <Wifi className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-1" />}
-                {amenity === "Food" && <Utensils className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-1" />}
-                {amenity === "Laundry" && <Droplet className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-1" />}
-                {amenity === "Gym" && <Dumbbell className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-1" />}
-                {amenity}
-              </div>
+                {amenity.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
+              </span>
             ))}
-          </span>
-          {/* +X indicator for extra amenities */}
-          {property.amenities.length > 2 && (
-            <div className="flex items-center border border-gray-300 rounded-full px-2 py-0.5 sm:px-3 sm:py-1 text-xs bg-white text-black hover:bg-gray-100 transition-colors ml-1">
-              +{property.amenities.length - (property.amenities.length > 2 && window.innerWidth >= 640 ? 3 : 2)}
-            </div>
-          )}
-        </div>
+            {property.amenities.length > 4 && (
+              <span
+                className="inline-block bg-gray-200 text-gray-600 rounded-full px-2 py-0.5 text-xs font-semibold border border-gray-300"
+              >
+                +{property.amenities.length - 4}
+              </span>
+            )}
+          </div>
+        )}
 
         <button 
           className="mt-auto w-full bg-[#5e17eb] hover:bg-[#4e13c7] text-white py-1.5 sm:py-2 rounded-md font-medium transition-all duration-200 flex items-center justify-center text-sm sm:text-base hover:shadow-md active:scale-95"

@@ -26,7 +26,6 @@ export async function POST(request) {
         console.log('Starting property addition process...');
         const formData = await request.formData();
 
-        // Debug: Log all form data entries
         console.log('All form data entries:');
         for (let [key, value] of formData.entries()) {
             console.log(`${key}: ${value}`);
@@ -55,7 +54,10 @@ export async function POST(request) {
             address: formData.get('address') || '',
             location: formData.get('location'),
             date: new Date(),
-            userId: userId
+            userId: userId,
+            latitude: formData.get('latitude') || '',
+            longitude: formData.get('longitude') || '',
+            googleMapsLink: formData.get('googleMapsLink') || '',
         };
 
         // Validate required fields
@@ -132,19 +134,16 @@ export async function POST(request) {
         const imageUrls = await Promise.all(uploadPromises);
         console.log('All images uploaded successfully:', imageUrls);
 
-        // Add images to property data
         propertyData.image = imageUrls;
 
         console.log('Connecting to MongoDB...');
         await connectDB();
         console.log('MongoDB connected successfully');
 
-        // Debug: Log the property data before creating the model
         console.log('Property data before model creation:', propertyData);
 
         const newProperty = new Property(propertyData);
 
-        // Debug: Log the property object before saving
         console.log('Property object before saving:', JSON.stringify(newProperty, null, 2));
 
         console.log('Saving property to database...');

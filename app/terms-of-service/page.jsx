@@ -301,8 +301,8 @@ export default function TermsOfService() {
                     For any questions or concerns regarding these Terms of Service, please contact us at:
                   </p>
                   <div className="bg-gray-100 p-4 rounded-lg">
-                    <p className="text-gray-600 mb-1">📧 <a href="mailto:support@bachhouse.in" className="text-indigo-600 hover:underline">support@bachhouse.in</a></p>
-                    <p className="text-gray-600">📞 +91-XXXXXXXXXX</p>
+                    <p className="text-gray-600 mb-1">📧 <a href="mailto:contact.bachhouse@gmail.com" className="text-indigo-600 hover:underline">support@bachhouse.in</a></p>
+                    <p className="text-gray-600">📞 +91-9039031115</p>
                     <p className="text-gray-600 mt-2">
                       We typically respond to inquiries within 1-2 business days.
                     </p>

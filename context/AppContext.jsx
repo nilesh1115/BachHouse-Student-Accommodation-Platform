@@ -1,14 +1,11 @@
 'use client';
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState, useMemo } from "react";
-import { properties as initialProperties } from "@/assets/assets";
 import { useUser,useAuth} from "@clerk/nextjs";
-import { userDummyData } from "@/assets/assets";
 import { get } from "mongoose";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-// Define default context value
 const defaultContextValue = {
   properties: [],
   filteredProperties: [],
@@ -101,21 +98,22 @@ export const AppContextProvider = ({ children }) => {
         // Transform the properties to match the expected format
         const transformedProperties = response.data.map(property => ({
           _id: property._id,
-          id: property._id, // Add id for backward compatibility
+          id: property._id, 
           name: property.name || '',
-          title: property.title || property.name || '', // Use title if available, fallback to name
+          title: property.title || property.name || '', 
           description: property.description || '',
-          type: property.type || property.proptype || '', // Use type first, then proptype as fallback
-          proptype: property.proptype || property.type || '', // Keep both for compatibility
+          type: property.type || property.proptype || '', 
+          proptype: property.proptype || property.type || '', 
           rent: typeof property.rent === 'number' ? property.rent : 0,
-          price: typeof property.price === 'number' ? property.price : (typeof property.rent === 'number' ? property.rent : 0), // Use price if available
+          price: typeof property.price === 'number' ? property.price : (typeof property.rent === 'number' ? property.rent : 0), 
           deposit: typeof property.deposit === 'number' ? property.deposit : 0,
           gender: property.gender || '',
           location: property.location || '',
+          distance: property.distance || '',
           address: property.address || '',
           amenities: Array.isArray(property.amenities) ? property.amenities : [],
           image: Array.isArray(property.image) ? property.image : [],
-          images: Array.isArray(property.image) ? property.image : [], // Add images for backward compatibility
+          images: Array.isArray(property.image) ? property.image : [], 
           occupancy: property.occupancy || '',
           date: property.date || new Date()
         }));
@@ -141,7 +139,7 @@ export const AppContextProvider = ({ children }) => {
     try {
       const storedFavorites = JSON.parse(localStorage.getItem('favorites')) || {};
       setFavorites(storedFavorites);
-      fetchProperties(); // Fetch properties on initial load
+      fetchProperties(); 
     } catch (error) {
       console.error("Failed to load initial data:", error);
     }

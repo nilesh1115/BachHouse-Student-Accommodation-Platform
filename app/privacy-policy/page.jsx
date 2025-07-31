@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-
+// This page displays the privacy policy and legal disclaimer for BachHouse
 export default function PrivacyPolicy() {
   return (
     <div className="min-h-screen bg-gray-50">

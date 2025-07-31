@@ -1,23 +1,23 @@
 import { FiMail, FiCheckCircle, FiClock, FiChevronRight } from 'react-icons/fi';
-
+//
 const inquiries = [
   {
     id: 1,
-    name: "Rahul Sharma",
-    property: "Sunshine Apartment",
+    name: "coming soon",
+    property: "....",
     date: "2023-05-15",
     status: "pending",
-    email: "rahul.sharma@example.com",
-    phone: "9876543210"
+    email: "@example.com",
+    phone: "98xxxxxxx0"
   },
   {
     id: 2,
-    name: "Priya Patel",
-    property: "Green Valley PG",
-    date: "2023-05-10",
+    name: "coming soon",
+    property: "....",
+    date: "00/00/0000",
     status: "responded",
-    email: "priya.patel@example.com",
-    phone: "8765432109"
+    email: "@example.com",
+    phone: "8xxxxxxx09"
   }
 ];
 

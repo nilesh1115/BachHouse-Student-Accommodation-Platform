@@ -11,7 +11,6 @@ const SearchBar = () => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const { updateFilters } = useAppContext();
 
-  // Initialize search term from URL
   useEffect(() => {
     const location = searchParams.get('location');
     if (location) {

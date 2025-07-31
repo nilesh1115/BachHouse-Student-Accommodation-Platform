@@ -49,6 +49,18 @@ const propertySchema = new mongoose.Schema({
         type: String,
         required: false,
     },
+    latitude: {
+        type: Number,
+        required: false,
+    },
+    longitude: {
+        type: Number,
+        required: false,
+    },
+    googleMapsLink: {
+        type: String,
+        required: false,
+    },
 });
 
 const Property = mongoose.models.Property || mongoose.model("Property", propertySchema);

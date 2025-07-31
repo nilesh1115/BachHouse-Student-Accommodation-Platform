@@ -4,8 +4,8 @@ import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useState } from 'react';
-import { MapPin, Mail, Phone, Send, Building2, GraduationCap, User, Clock, MessageSquare, Shield, HelpCircle } from 'lucide-react';
-
+import { Mail, Phone, Send, Building2, GraduationCap, User, MessageSquare, HelpCircle } from 'lucide-react';
+// This page provides a contact form and FAQs for users to reach out to BachHouse
 export default function ContactUs() {
   const [activeFaq, setActiveFaq] = useState(null);
   const [formData, setFormData] = useState({
@@ -25,7 +25,6 @@ export default function ContactUs() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission
     console.log(formData);
   };
 
@@ -60,19 +59,18 @@ export default function ContactUs() {
                   <div className="bg-[#5e17eb]/10 p-2 sm:p-3 rounded-lg">
                     <MessageSquare className="h-5 w-5 sm:h-6 sm:w-6 text-[#5e17eb]" />
                   </div>
-    <div
-  className="cursor-pointer hover:text-green-600 transition"
-  onClick={() => {
-    window.open(
-      'https://wa.me/919039031115?text=Hello%20BachHouse%2C%20I%20came%20across%20your%20platform%20and%20would%20like%20to%20get%20in%20touch.',
-      '_blank'
-    );
-  }}
->
-  <h3 className="font-semibold text-gray-800">Chat with Us</h3>
-  <p className="text-sm text-gray-600">Get instant support</p>
-</div>
-
+                  <div
+                      className="cursor-pointer hover:text-green-600 transition"
+                      onClick={() => {
+                        window.open(
+                          'https://wa.me/919039031115?text=Hello%20BachHouse%2C%20I%20came%20across%20your%20platform%20and%20would%20like%20to%20get%20in%20touch.',
+                          '_blank'
+                        );
+                      }}
+                    >
+                    <h3 href="https://wa.me/919039031115" className="font-semibold text-gray-800">Chat with Us</h3>
+                    <p className="text-sm text-gray-600">Get instant support</p>
+                  </div>
                 </div>
               </div>
               <div className="bg-white p-4 sm:p-5 md:p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
@@ -87,22 +85,21 @@ export default function ContactUs() {
                 </div>
               </div>
               <div
-  className="bg-white p-4 sm:p-5 md:p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow sm:col-span-2 lg:col-span-1 cursor-pointer"
-  onClick={() => {
-    window.location.href = 'mailto:contact.bachhouse@gmail.com';
-  }}
->
-  <div className="flex items-center gap-3 sm:gap-4">
-    <div className="bg-[#5e17eb]/10 p-2 sm:p-3 rounded-lg">
-      <Mail className="h-5 w-5 sm:h-6 sm:w-6 text-[#5e17eb]" />
-    </div>
-    <div>
-      <h3 className="text-sm sm:text-base font-semibold text-gray-800">Email Us</h3>
-      <p className="text-xs sm:text-sm text-gray-600">contact.bachhouse@gmail.com</p>
-    </div>
-  </div>
-</div>
-
+                className="bg-white p-4 sm:p-5 md:p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow sm:col-span-2 lg:col-span-1 cursor-pointer"
+                onClick={() => {
+                  window.location.href = 'mailto:contact.bachhouse@gmail.com';
+                }}
+              >
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div className="bg-[#5e17eb]/10 p-2 sm:p-3 rounded-lg">
+                    <Mail className="h-5 w-5 sm:h-6 sm:w-6 text-[#5e17eb]" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm sm:text-base font-semibold text-gray-800">Email Us</h3>
+                    <p className="text-xs sm:text-sm text-gray-600">contact.bachhouse@gmail.com</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -172,7 +169,7 @@ export default function ContactUs() {
                       </select>
                     </div>
                   </div>
-                  
+                  // Message Textarea
                   <div>
                     <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                       Your Message
@@ -283,7 +280,7 @@ export default function ContactUs() {
     </div>
   );
 }
-
+// FAQ items for the FAQ section
 const faqItems = [
   {
     question: "Is BachHouse free for students?",

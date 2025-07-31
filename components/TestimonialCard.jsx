@@ -1,3 +1,4 @@
+// This page displays testimonials from users about their experiences with the service
 export default function TestimonialCard({ quote, author, rating }) {
   return (
     <div className="bg-gray-50 p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300">

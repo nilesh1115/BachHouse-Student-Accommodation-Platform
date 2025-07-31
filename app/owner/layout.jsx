@@ -2,6 +2,8 @@ import OwnerNavbar from '@/components/owner/Navbar';
 import OwnerSidebar from '@/components/owner/Sidebar';
 import OwnerFooter from '@/components/owner/Footer';
 
+// This layout component wraps the owner pages with a consistent layout
+
 export default function OwnerLayout({ children }) {
   return (
     <div className="flex flex-col min-h-screen bg-white">

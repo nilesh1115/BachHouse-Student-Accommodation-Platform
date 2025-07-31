@@ -11,8 +11,7 @@ import {
   FiChevronLeft, FiChevronRight, FiNavigation, FiArrowLeft
 } from 'react-icons/fi'
 import { FaWhatsapp } from 'react-icons/fa'
-import { WhatsAppIcon, LocationIcon } from '@/assets/assets'
-import PropertyCard from '@/components/PropertyCard'
+
 
 const amenityIcons = {
   'WiFi': <FiWifi className="mr-1.5" size={16} />,
@@ -43,7 +42,6 @@ const PropertyDetails = () => {
           throw new Error('Failed to fetch property details');
         }
         const data = await response.json();
-        // Transform the property data to match the expected format
         const transformedProperty = {
           ...data,
           id: data._id,
@@ -63,7 +61,10 @@ const PropertyDetails = () => {
           whatsappNumber: data.whatsappNumber || data.phone || data.ownerPhone || '',
           available: data.available !== false,
           distance: data.distance || '',
-          furnishing: data.furnishing || 'Furnished'
+          furnishing: data.furnishing || 'Furnished',
+          googleMapsLink: data.googleMapsLink || '',
+          latitude: data.latitude || '',
+          longitude: data.longitude || '',
         };
         setProperty(transformedProperty);
       } catch (err) {
@@ -78,13 +79,7 @@ const PropertyDetails = () => {
 
   const isFavorite = favorites[property?.id] || false
 
-  const toggleFavorite = () => {
-    if (isFavorite) {
-      removeFromFavorites(property.id)
-    } else {
-      addToFavorites(property.id)
-    }
-  }
+  
 
   const nextImage = () => {
     if (!property?.images) return;
@@ -234,22 +229,6 @@ const PropertyDetails = () => {
                   </button>
                 </>
               )}
-              
-              {/* Favorite Button */}
-              <button
-                onClick={toggleFavorite}
-                className="absolute top-3 right-3 bg-white/80 p-2 rounded-full shadow hover:bg-white transition-all z-10"
-                aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
-              >
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  className={`h-4 w-4 ${isFavorite ? 'text-red-500 fill-current' : 'text-gray-500 hover:text-red-400'}`}
-                  viewBox="0 0 20 20" 
-                  fill="currentColor"
-                >
-                  <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-                </svg>
-              </button>
             </div>
             
             {/* Image Indicators */}
@@ -313,7 +292,7 @@ const PropertyDetails = () => {
                   {property.available ? 'Available' : 'Not Available'}
                 </span>
                 <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${getGenderBadge().bg} ${getGenderBadge().text} ${getGenderBadge().border}`}>
-                  {property.gender === 'Male' && '♂ '}
+                  {property.gender === 'Male' && '♂ ' }
                   {property.gender === 'Female' && '♀ '}
                   {property.gender === 'Unisex' && '⚥ '}
                   {property.gender}
@@ -325,10 +304,11 @@ const PropertyDetails = () => {
                 <span className="text-gray-700">{property.location}</span>
               </div>
               {property.address && (
-                <div className="flex items-center mb-4 text-sm">
-                  <span className="font-medium text-gray-700">Address:</span>
-                  <span className="ml-2 text-gray-600">{property.address}</span>
+                <div className="flex items-center  text-sm mb-4">
+                <h2 className="text-lg font-semibold text-gray-800 mr-1">Address:</h2>
+                <span className="text-gray-700">{property.address}</span>
                 </div>
+              
               )}
               
               <div className="mb-6">
@@ -358,16 +338,17 @@ const PropertyDetails = () => {
                   <span className="text-gray-700">{property.location}</span>
                 </div>
                 
-                {/* Map Placeholder Box */}
-                <div className="relative h-64 w-full bg-gray-200 rounded-lg overflow-hidden mt-4">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center p-4">
-                      <FiNavigation className="mx-auto text-gray-400 mb-2" size={24} />
-                      <p className="text-gray-500 text-sm">Map will be displayed here</p>
-                      <p className="text-gray-400 text-xs mt-1">(coming soon...)</p>
-                    </div>
-                  </div>
-                </div>
+                {/* Map Placeholder Box / Google Map */}
+                {property.latitude && property.longitude && (
+                  <iframe
+                    width="100%"
+                    height="250"
+                    style={{ border: 0, borderRadius: '8px' }}
+                    loading="lazy"
+                    allowFullScreen
+                    src={`https://www.google.com/maps?q=${property.latitude},${property.longitude}&z=16&output=embed`}
+                  />
+                )}
                 
                 {property.distance && (
                   <p className="text-xs text-gray-500 mt-2 text-center">
@@ -378,7 +359,13 @@ const PropertyDetails = () => {
                 {/* Directions Button */}
                 <div className="mt-4">
                   <a
-                    href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(property.address || property.location)}`}
+                    href={
+                      property.googleMapsLink
+                        ? property.googleMapsLink
+                        : property.latitude && property.longitude
+                          ? `https://www.google.com/maps/dir/?api=1&destination=${property.latitude},${property.longitude}`
+                          : `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(property.address || property.location)}`
+                    }
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors duration-200"
@@ -388,6 +375,8 @@ const PropertyDetails = () => {
                   </a>
                 </div>
               </div>
+
+              <hr className="my-8 border-t border-gray-200" />
 
               {/* Similar Properties Section */}
               <div className="mb-6">
@@ -402,7 +391,7 @@ const PropertyDetails = () => {
                     .map(similarProperty => (
                       <div 
                         key={similarProperty.id}
-                        className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 hover:shadow-md transition-shadow duration-200"
+                        className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 hover:shadow-md transition-shadow duration-200 h-full flex flex-col"
                       >
                         {/* Property Image */}
                         <div className="relative h-48 w-full">
@@ -422,29 +411,11 @@ const PropertyDetails = () => {
                               e.currentTarget.src = '/images/default-property.jpg';
                             }}
                           />
-                          {/* Favorite Button */}
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              favorites[similarProperty.id] 
-                                ? removeFromFavorites(similarProperty.id)
-                                : addToFavorites(similarProperty.id);
-                            }}
-                            className="absolute top-2 right-2 bg-white/90 p-2 rounded-full shadow-sm hover:bg-white transition-all"
-                          >
-                            <svg 
-                              xmlns="http://www.w3.org/2000/svg" 
-                              className={`h-5 w-5 ${favorites[similarProperty.id] ? 'text-red-500 fill-current' : 'text-gray-400 hover:text-red-400'}`}
-                              viewBox="0 0 20 20" 
-                              fill="currentColor"
-                            >
-                              <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-                            </svg>
-                          </button>
+                          
                         </div>
 
                         {/* Property Details */}
-                        <div className="p-4">
+                        <div className="p-4 flex flex-col h-full">
                           <h3 className="text-lg font-semibold text-gray-800 mb-1 line-clamp-1">{similarProperty.title}</h3>
                           
                           {/* Price and Location */}
@@ -455,13 +426,13 @@ const PropertyDetails = () => {
                             </div>
                             <div className="flex items-center text-gray-600 text-sm">
                               <FiMapPin className="mr-1" size={14} />
-                              <span>{similarProperty?.distance || '0'} km</span>
+                              <span>{similarProperty?.distance || '0'} </span>
                             </div>
                           </div>
 
                           {/* Amenities */}
-                          <div className="flex flex-wrap gap-2 mb-4">
-                            {similarProperty?.amenities?.slice(0, 2).map((amenity, index) => (
+                          <div className="flex flex-wrap gap-2">
+                            {similarProperty?.amenities?.slice(0, 4).map((amenity, index) => (
                               <div 
                                 key={index} 
                                 className="flex items-center px-2 py-1 bg-gray-50 text-gray-700 text-xs font-medium rounded-md"
@@ -474,7 +445,7 @@ const PropertyDetails = () => {
 
                           {/* View Button */}
                           <button
-                            className="w-full bg-[#5e17eb] hover:bg-[#4a10d9] text-white py-2 px-4 rounded-md font-medium text-sm transition-colors duration-200"
+                            className="w-full bg-[#5e17eb] hover:bg-[#4a10d9] text-white py-2 px-4 rounded-md font-medium text-sm transition-colors duration-200 mt-auto"
                             onClick={() => router.push(`/property-details/${similarProperty.id}`)}
                           >
                             View Details

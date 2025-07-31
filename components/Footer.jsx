@@ -96,9 +96,9 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4 text-[#340c83]">Student Resources</h3>
             <ul className="space-y-2">
               <li><Link href="/moving-guide" className="text-teal-800 hover:text-teal-400 transition">Moving Guide</Link></li>
-              <li><Link href="/safety-tips" className="text-teal-800 hover:text-teal-400 transition">Safety Tips</Link></li>
+              {/*<li><Link href="/safety-tips" className="text-teal-800 hover:text-teal-400 transition">Safety Tips</Link></li> */}
               <li><Link href="/roommate-finder" className="text-teal-800 hover:text-teal-400 transition">Roommate Finder</Link></li>
-              <li><Link href="/faq" className="text-teal-800 hover:text-teal-400 transition">FAQs</Link></li>
+              <li><Link href="/contact-us" className="text-teal-800 hover:text-teal-400 transition">FAQs</Link></li>
             </ul>
           </div>
           {/* Contact Us */}
@@ -141,7 +141,6 @@ const Footer = () => {
 
         {/* Mobile View  */}
         <div className="md:hidden">
-          {/* Brand Info (always visible) */}
           <div className="space-y-3 mb-6">
             <div className="flex items-center -ml-4">
               <Image 
@@ -194,7 +193,7 @@ const Footer = () => {
                   <li><Link href="/moving-guide" className="text-teal-800 hover:text-teal-400 transition text-sm">Moving Guide</Link></li>
                   <li><Link href="/safety-tips" className="text-teal-800 hover:text-teal-400 transition text-sm">Safety Tips</Link></li>
                   <li><Link href="/roommate-finder" className="text-teal-800 hover:text-teal-400 transition text-sm">Roommate Finder</Link></li>
-                  <li><Link href="/faq" className="text-teal-800 hover:text-teal-400 transition text-sm">FAQs</Link></li>
+                  <li><Link href="/contact-us" className="text-teal-800 hover:text-teal-400 transition text-sm">FAQs</Link></li>
                   <li><Link href="/testimonials" className="text-teal-800 hover:text-teal-400 transition text-sm">Testimonials</Link></li>
                 </ul>
               )
@@ -260,7 +259,7 @@ const Footer = () => {
             </div>
           ))}
         </div>
-        {/* End of Collapsible Sections */}
+        {/* copy rights*/}
         <div className="border-t border-gray-800 my-8"></div>
 
         <div className="flex flex-col md:flex-row justify-between items-center">

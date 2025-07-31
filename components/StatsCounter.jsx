@@ -7,7 +7,7 @@ export default function StatsCounter({ end, duration = 2, suffix = '', decimals 
 
   useEffect(() => {
     let start = 0;
-    const increment = end / (duration * 60); // 60fps
+    const increment = end / (duration * 60);
 
     const timer = setInterval(() => {
       start += increment;

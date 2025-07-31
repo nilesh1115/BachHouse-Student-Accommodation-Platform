@@ -10,7 +10,6 @@ import {HomeIcon} from '@/assets/assets';
 import { useUser } from "@clerk/nextjs";
 
 const Navbar = () => {
-  //const { isOwner, user } = useAppContext();
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

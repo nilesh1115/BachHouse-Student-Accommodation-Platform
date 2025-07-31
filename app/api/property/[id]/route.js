@@ -14,7 +14,6 @@ export async function GET(request, { params }) {
       );
     }
 
-    // Transform the property data to ensure all required fields are present
     const transformedProperty = {
       _id: property._id,
       name: property.name || 'Unnamed Property',
@@ -33,6 +32,9 @@ export async function GET(request, { params }) {
       phone: property.phone || 'Not specified',
       email: property.email || '',
       date: property.date || new Date(),
+      googleMapsLink: property.googleMapsLink || '',
+      latitude: property.latitude || '',
+      longitude: property.longitude || '',
     };
 
     return NextResponse.json(transformedProperty);
@@ -42,5 +44,36 @@ export async function GET(request, { params }) {
       { error: 'Failed to fetch property details' },
       { status: 500 }
     );
+  }
+}
+
+export async function DELETE(request, { params }) {
+  try {
+    await connectDB();
+    const deleted = await Property.findByIdAndDelete(params.id);
+    if (!deleted) {
+      return NextResponse.json({ success: false, message: 'Property not found' }, { status: 404 });
+    }
+    return NextResponse.json({ success: true, message: 'Property deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting property:', error);
+    return NextResponse.json({ success: false, message: 'Failed to delete property' }, { status: 500 });
+  }
+}
+
+export async function PATCH(request, { params }) {
+  try {
+    await connectDB();
+    const body = await request.json();
+    const update = {};
+    if (typeof body.available !== 'undefined') update.available = body.available;
+    const updated = await Property.findByIdAndUpdate(params.id, update, { new: true });
+    if (!updated) {
+      return NextResponse.json({ success: false, message: 'Property not found' }, { status: 404 });
+    }
+    return NextResponse.json({ success: true, property: updated });
+  } catch (error) {
+    console.error('Error updating property:', error);
+    return NextResponse.json({ success: false, message: 'Failed to update property' }, { status: 500 });
   }
 } 

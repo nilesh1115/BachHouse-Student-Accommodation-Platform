@@ -73,8 +73,7 @@ export async function GET(request) {
                 });
             });
         }
-
-        // Transform the properties to ensure all required fields are present
+        // Transform properties to match the expected format
         const transformedProperties = properties.map(property => ({
             _id: property._id,
             name: property.name || '',

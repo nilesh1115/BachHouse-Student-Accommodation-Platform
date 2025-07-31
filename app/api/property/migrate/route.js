@@ -2,7 +2,7 @@ import connectDB from '@/config/db';
 import Property from '@/models/Property';
 import { NextResponse } from 'next/server';
 import { getAuth } from '@clerk/nextjs/server';
-
+//
 export async function POST(request) {
     try {
         const { userId } = getAuth(request);
@@ -16,7 +16,6 @@ export async function POST(request) {
 
         await connectDB();
 
-        // Update all properties that don't have a userId
         const result = await Property.updateMany(
             { userId: { $exists: false } },
             { $set: { userId: userId } }

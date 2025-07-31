@@ -57,6 +57,21 @@ export default function MyListings() {
     }
   };
 
+  const handleToggleAvailable = async (propertyId, currentAvailable) => {
+    try {
+      const { data } = await axios.patch(`/api/property/${propertyId}`, { available: !currentAvailable });
+      if (data.success) {
+        toast.success('Availability updated');
+        fetchProperties();
+      } else {
+        toast.error(data.message || 'Failed to update availability');
+      }
+    } catch (error) {
+      console.error('Error updating availability:', error);
+      toast.error('Error updating availability. Please try again.');
+    }
+  };
+
   useEffect(() => {
     const initialize = async () => {
       await migrateProperties();
@@ -74,7 +89,7 @@ export default function MyListings() {
   }
 
   return (
-    <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
+    <div className="max-w-6xl mx-auto bg-white p-4 sm:p-6 rounded-lg shadow">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <h1 className="text-xl sm:text-2xl font-bold text-gray-800">My Properties</h1>
         <Link 
@@ -95,6 +110,7 @@ export default function MyListings() {
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rent & Deposit</th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type & Gender</th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Available</th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
@@ -118,13 +134,15 @@ export default function MyListings() {
                     <div className="text-gray-900">{property.location}</div>
                     <div className="text-gray-500">{property.address}</div>
                   </td>
-                  <td className="px-4 py-4 whitespace-nowrap text-sm font-medium">
+                  <td className="px-4 py-4 whitespace-nowrap">
                     <button 
-                      onClick={() => router.push(`/edit-property/${property._id}`)}
-                      className="text-blue-600 hover:text-blue-900 mr-4"
+                      onClick={() => handleToggleAvailable(property._id, property.available)}
+                      className={`px-3 py-1 rounded-full text-xs font-semibold border transition-colors duration-200 ${property.available ? 'bg-green-100 text-green-800 border-green-200 hover:bg-green-200' : 'bg-red-100 text-red-800 border-red-200 hover:bg-red-200'}`}
                     >
-                      <FiEdit2 className="inline mr-1" /> Edit
+                      {property.available ? 'Available' : 'Not Available'}
                     </button>
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap text-sm font-medium">
                     <button 
                       onClick={() => handleDelete(property._id)}
                       className="text-red-600 hover:text-red-900"
@@ -136,7 +154,7 @@ export default function MyListings() {
               ))
             ) : (
               <tr>
-                <td colSpan="5" className="px-4 py-4 text-center text-gray-500">
+                <td colSpan="6" className="px-4 py-4 text-center text-gray-500">
                   No properties found
                 </td>
               </tr>
@@ -171,14 +189,15 @@ export default function MyListings() {
                   <p className="text-xs text-gray-500">Location</p>
                   <p className="text-gray-900 text-sm">{property.address}</p>
                 </div>
-                
-                <div className="mt-4 flex justify-end space-x-3">
+                <div className="mt-2">
                   <button 
-                    onClick={() => router.push(`/edit-property/${property._id}`)}
-                    className="text-blue-600 hover:text-blue-900 text-sm flex items-center"
+                    onClick={() => handleToggleAvailable(property._id, property.available)}
+                    className={`px-3 py-1 rounded-full text-xs font-semibold border transition-colors duration-200 ${property.available ? 'bg-green-100 text-green-800 border-green-200 hover:bg-green-200' : 'bg-red-100 text-red-800 border-red-200 hover:bg-red-200'}`}
                   >
-                    <FiEdit2 className="mr-1" /> Edit
+                    {property.available ? 'Available' : 'Not Available'}
                   </button>
+                </div>
+                <div className="mt-4 flex justify-end space-x-3">
                   <button 
                     onClick={() => handleDelete(property._id)}
                     className="text-red-600 hover:text-red-900 text-sm flex items-center"

@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaHome, FaEye, FaBullseye, FaUserGraduate, FaUserTie, FaSearch, FaShieldAlt, FaComments, FaMapMarkerAlt, FaRupeeSign, FaBook, FaBriefcase, FaBuilding, FaCheckCircle } from 'react-icons/fa';
+import { FaHome, FaEye, FaBullseye, FaUserGraduate, FaUserTie, FaSearch, FaComments, FaMapMarkerAlt, FaSlidersH,FaBed, FaBook, FaBriefcase,  FaCheckCircle } from 'react-icons/fa';
 import Image from 'next/image';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -79,7 +79,7 @@ const AboutUs = () => {
                   </h3>
                 </div>
                 <p className="text-sm sm:text-base md:text-lg text-gray-700 leading-relaxed">
-                  We witnessed the struggles of bachelors in finding safe, affordable, and well-maintained accommodations. From fake listings to unverified properties, the rental market was fraught with challenges.
+                  We witnessed the struggles of bachelors in finding safe, affordable, and conveniently located accommodations. From scattered listings to lack of clarity about nearby options, the rental journey often becomes frustrating and time-consuming.
                 </p>
               </div>
               
@@ -93,8 +93,7 @@ const AboutUs = () => {
                   </h3>
                 </div>
                 <p className="text-sm sm:text-base md:text-lg text-gray-700 leading-relaxed">
-                  BachHouse was created to revolutionize the rental experience. We verify every property, ensure transparent pricing, and provide a seamless platform for bachelors to find their perfect living space.
-                </p>
+BachHouse was created to simplify the search for accommodation. We provide a user-friendly platform where bachelors can easily explore available rooms, PGs, and flats near their college—helping them make informed choices without the hassle of wandering or relying on unreliable sources.                </p>
               </div>
             </div>
 
@@ -190,10 +189,10 @@ const AboutUs = () => {
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
             {[
-              { icon: <FaShieldAlt />, title: "Verified Properties", text: "Every listing undergoes thorough verification for your safety and peace of mind." },
-              { icon: <FaRupeeSign />, title: "Transparent Pricing", text: "No hidden charges or surprise fees. Clear pricing from day one." },
-              { icon: <FaBuilding />, title: "Quality Living", text: "Carefully selected properties with essential amenities for comfortable living." },
-              { icon: <FaComments />, title: "24/7 Support", text: "Round-the-clock assistance for all your accommodation needs." }
+              { icon: <FaMapMarkerAlt />, title: "Nearby Listings", text: "Every listing undergoes thorough verification for your safety and peace of mind." },
+              { icon: <FaBed />, title: "Comfortable Living", text: "Find student-friendly stays with all the basic comforts you need." },
+              { icon: <FaSlidersH />, title: "Focused on What Matters", text: "Focused on what matters — location, comfort, and affordability for bachelors." },
+              { icon: <FaComments />, title: "24/7 Support", text: "We’re here when you need us — get help or answers throughout your accommodation journey." }
             ].map((item, index) => (
               <div key={index} className="bg-white p-4 sm:p-5 md:p-6 rounded-lg sm:rounded-xl md:rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-1 sm:hover:-translate-y-2 transition-all duration-300 border-b-2 sm:border-b-4 border-[#5e17eb]">
                 <div className="text-[#5e17eb] text-3xl sm:text-4xl mb-4 sm:mb-6">
@@ -265,7 +264,6 @@ const AboutUs = () => {
           </div>
         </div>
       </section>
-
       <Footer />
     </div>
   );

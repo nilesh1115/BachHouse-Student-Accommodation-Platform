@@ -3,19 +3,25 @@ import { useAppContext } from '@/context/AppContext';
 import { useState } from 'react';
 import { FiChevronDown, FiChevronUp, FiX, FiCheck, FiDollarSign, FiHome, FiUsers, FiMapPin, FiLayers, FiCalendar, FiFilter } from 'react-icons/fi';
 
+const DEFAULT_EXPANDED = ['price', 'gender'];
 const FilterPanel = ({ onClose, propertyCount }) => {
   const { filters, updateFilters } = useAppContext();
-  const [expandedSection, setExpandedSection] = useState('price');
+  // Use an array to track multiple expanded sections
+  const [expandedSections, setExpandedSections] = useState(DEFAULT_EXPANDED);
 
   const toggleSection = (section) => {
-    setExpandedSection(expandedSection === section ? null : section);
+    setExpandedSections((prev) =>
+      prev.includes(section)
+        ? prev.filter((s) => s !== section)
+        : [...prev, section]
+    );
   };
 
   const accommodationTypes = ['PG', 'Apartment', 'Flat', 'Hostel', 'Villa', 'Studio', 'Penthouse'];
   const genderOptions = ['Male', 'Female', 'Unisex'];
   const sharingOptions = ['Private', 'Shared (2 beds)', 'Shared (3 beds)', 'Shared (4 beds)'];
   const furnishingOptions = ['Fully Furnished', 'Semi-Furnished', 'Basic', 'Luxury'];
-  const amenitiesOptions = ['WiFi', 'AC', 'Parking', 'Laundry', 'Meals', 'Gym', 'Pool'];
+  const amenitiesOptions = ['bed','cupboard', 'geyser','Water_availability_24_7','hot_water','wifi',' drinking_water','cleaning','balcony','Table','chair','wash_basin','Indian_toilet','western_toilet','rooftop_access','security','parking','ac','kitchen','laundry'];
 
   const handlePriceChange = (min, max) => {
     updateFilters({ minPrice: min, maxPrice: max });
@@ -49,24 +55,27 @@ const FilterPanel = ({ onClose, propertyCount }) => {
   const FilterSection = ({ title, icon, sectionKey, children }) => (
     <div className="border-b border-gray-100 pb-4 mb-4">
       <button
-        className="flex justify-between items-center w-full py-3 focus:outline-none"
+        className="flex justify-between items-center w-full py-3 focus:outline-none transition-colors"
         onClick={() => toggleSection(sectionKey)}
+        aria-expanded={expandedSections.includes(sectionKey)}
+        aria-controls={`filter-section-${sectionKey}`}
       >
         <div className="flex items-center">
           <span className="text-gray-500 mr-3">{icon}</span>
           <h3 className="text-sm font-medium text-gray-700">{title}</h3>
         </div>
-        {expandedSection === sectionKey ? (
-          <FiChevronUp className="text-gray-400" />
+        {expandedSections.includes(sectionKey) ? (
+          <FiChevronUp className="text-gray-400 transition-transform duration-200" />
         ) : (
-          <FiChevronDown className="text-gray-400" />
+          <FiChevronDown className="text-gray-400 transition-transform duration-200" />
         )}
       </button>
-      {expandedSection === sectionKey && (
-        <div className="pl-8 mt-2">
-          {children}
-        </div>
-      )}
+      <div
+        id={`filter-section-${sectionKey}`}
+        className={`transition-all duration-300 ease-in-out overflow-hidden ${expandedSections.includes(sectionKey) ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}
+      >
+        <div className="pl-8 mt-2">{children}</div>
+      </div>
     </div>
   );
 
@@ -112,8 +121,34 @@ const FilterPanel = ({ onClose, propertyCount }) => {
           </button>
         </div>
       </div>
-
+      
       <div className="p-5 max-h-[calc(100vh-200px)] lg:max-h-none overflow-y-auto">
+      {/* Gender */}
+      <FilterSection title="Gender Preference" icon={<FiUsers />} sectionKey="gender">
+          <div className="space-y-2">
+            {genderOptions.map((gender) => (
+              <label key={gender} className="flex items-center space-x-3">
+                <div className="relative">
+                  <input
+                    type="radio"
+                    name="gender"
+                    checked={filters.gender === gender}
+                    onChange={() => handleCheckboxChange('gender', gender, filters.gender !== gender)}
+                    className="sr-only"
+                  />
+                  <div className={`w-4 h-4 rounded-full border ${filters.gender === gender ? 'border-blue-500 bg-blue-500' : 'border-gray-300'}`}>
+                    {filters.gender === gender && (
+                      <div className="absolute inset-0.5 rounded-full bg-white"></div>
+                    )}
+                  </div>
+                </div>
+                <span className="text-sm text-gray-700">{gender}</span>
+              </label>
+            ))}
+          </div>
+        </FilterSection>
+
+      
         {/* Price Range Filter */}
         <FilterSection title="Price Range" icon={<FiDollarSign />} sectionKey="price">
           <div className="space-y-4">
@@ -123,7 +158,7 @@ const FilterPanel = ({ onClose, propertyCount }) => {
             </div>
             <RangeSlider
               min={0}
-              max={100000}
+              max={30000}
               value={filters.maxPrice}
               onChange={(e) => handlePriceChange(filters.minPrice, parseInt(e.target.value))}
               formatValue={(val) => `₹${val.toLocaleString()}`}
@@ -156,30 +191,7 @@ const FilterPanel = ({ onClose, propertyCount }) => {
           </div>
         </FilterSection>
 
-        {/* Gender */}
-        <FilterSection title="Gender Preference" icon={<FiUsers />} sectionKey="gender">
-          <div className="space-y-2">
-            {genderOptions.map((gender) => (
-              <label key={gender} className="flex items-center space-x-3">
-                <div className="relative">
-                  <input
-                    type="radio"
-                    name="gender"
-                    checked={filters.gender === gender}
-                    onChange={() => handleCheckboxChange('gender', gender, filters.gender !== gender)}
-                    className="sr-only"
-                  />
-                  <div className={`w-4 h-4 rounded-full border ${filters.gender === gender ? 'border-blue-500 bg-blue-500' : 'border-gray-300'}`}>
-                    {filters.gender === gender && (
-                      <div className="absolute inset-0.5 rounded-full bg-white"></div>
-                    )}
-                  </div>
-                </div>
-                <span className="text-sm text-gray-700">{gender}</span>
-              </label>
-            ))}
-          </div>
-        </FilterSection>
+        
 
         {/* Distance */}
         <FilterSection title="Distance" icon={<FiMapPin />} sectionKey="distance">
@@ -190,8 +202,8 @@ const FilterPanel = ({ onClose, propertyCount }) => {
             </div>
             <RangeSlider
               min={0}
-              max={20}
-              step={0.5}
+              max={5}
+              step={0.1}
               value={filters.distance}
               onChange={(e) => updateFilters({ distance: parseFloat(e.target.value) })}
             />

@@ -3,7 +3,7 @@ import connectDB from "@/config/db";
 import { getAuth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import User from "@/models/User";
-
+// To get user data
 export async function GET(request) {
   try {
     const { userId } = getAuth(request);
@@ -29,7 +29,7 @@ export async function GET(request) {
       success: true,
       user: {
         id: userId,
-        role: 'user' // You can modify this based on your user roles
+        role: 'user' 
       }
     });
 

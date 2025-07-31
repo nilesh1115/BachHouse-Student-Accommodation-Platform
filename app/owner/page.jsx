@@ -3,8 +3,9 @@ import { useAppContext } from '@/context/AppContext';
 import { useState, useCallback } from 'react';
 import { FiUpload, FiX, FiImage } from 'react-icons/fi';
 import { toast } from 'react-toastify';
-import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
+
 
 const LOCATIONS = [
   'Sant Tukaram Nagar',
@@ -67,6 +68,9 @@ export default function AddProperty() {
     ownerPhone: '',
     price: '',
     address: '',
+    latitude: '',
+    longitude: '',
+    googleMapsLink: '',
   });
 
   const [error, setError] = useState(null);
@@ -105,6 +109,13 @@ export default function AddProperty() {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
+
+    // Collect checked amenities
+    const selectedAmenities = Object.keys(amenities).filter(key => amenities[key]);
+    setFormData(prev => ({
+      ...prev,
+      amenities: selectedAmenities
+    }));
 
     // Validate required fields
     const requiredFields = {
@@ -154,7 +165,7 @@ export default function AddProperty() {
         price: Number(formData.price) || Number(formData.rent) || 0,
         deposit: Number(formData.deposit) || 0,
         occupancy: formData.occupancy || '1',
-        amenities: Array.isArray(formData.amenities) ? formData.amenities : [],
+        amenities: selectedAmenities,
         rules: Array.isArray(formData.rules) ? formData.rules : [],
         ownerName: formData.ownerName,
         phone: formData.phone,
@@ -165,6 +176,9 @@ export default function AddProperty() {
         distance: formData.distance || '',
         furnishing: formData.furnishing || 'Furnished',
         address: formData.address || '',
+        latitude: formData.latitude || '',
+        longitude: formData.longitude || '',
+        googleMapsLink: formData.googleMapsLink || '',
         date: new Date()
       };
 
@@ -225,6 +239,9 @@ export default function AddProperty() {
         ownerPhone: '',
         price: '',
         address: '',
+        latitude: '',
+        longitude: '',
+        googleMapsLink: '',
         });
       setImages([]);
       
@@ -284,6 +301,18 @@ export default function AddProperty() {
               ))}
             </select>
           </div>
+        </div>
+
+        <div className="space-y-1">
+          <label className="block text-xs sm:text-sm font-medium text-gray-700">Distance from DIT Pimpri</label>
+          <input 
+            type="text" 
+            name="distance"
+            className="w-full text-gray-700 px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:border-2 focus:border-blue-500 focus:outline-none transition-colors"  
+            placeholder="eg 200 m ,1 km , 1.4 km"
+            value={formData.distance}
+            onChange={handleChange}
+          />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
@@ -470,6 +499,19 @@ export default function AddProperty() {
             value={formData.address}
             onChange={handleChange}
           />
+          {/* Google Maps Link Input */}
+          <div className="mt-2">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700">Google Maps Link (Shareable)</label>
+            <input
+              type="url"
+              name="googleMapsLink"
+              className="w-full text-gray-700 px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:border-2 focus:border-blue-500 focus:outline-none transition-colors"
+              placeholder="Paste the Google Maps shareable link here"
+              value={formData.googleMapsLink || ''}
+              onChange={handleChange}
+            />
+          </div>
+          
         </div>
 
         {/* Contact Information Section */}
