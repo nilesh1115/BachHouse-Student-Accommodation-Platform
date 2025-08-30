@@ -8,7 +8,7 @@ It provides students with advanced property search tools and owners with a power
 
 # Features  
 
-#  👩‍🎓 For Students  
+#  For Students  
 - Advanced Property Search: Filter by location, rent, type, and amenities  
 - Detailed Property Listings: Photos, descriptions, and rent breakdowns  
 - Property Details Page: Comprehensive info for informed decision-making  
@@ -20,7 +20,7 @@ It provides students with advanced property search tools and owners with a power
 - Manage Listings: Update, edit, or remove existing listings  
 - Inquiry Management: Handle and respond to student inquiries  
 
-###  General Features  
+# General Features  
 - Blog Section: Tips & insights for both students and owners  
 - Contact System: Direct communication between users  
 - Responsive UI: Optimized for mobile, tablet, and desktop  
@@ -39,7 +39,7 @@ It provides students with advanced property search tools and owners with a power
 
 ---
 
-## 📂 Project Structure  
+# 📂 Project Structure  
 
 
 bachhouse/
@@ -63,14 +63,14 @@ bachhouse/
 
 ## Installation & Setup
 
-### Prerequisites
+## Prerequisites
 
 * Node.js (v18+)
 * MongoDB Atlas (or local MongoDB)
 * Clerk account (for authentication)
 * Inngest account (for background jobs)
 
-### Steps
+##  Steps
 
 1. **Clone the repository**
 
