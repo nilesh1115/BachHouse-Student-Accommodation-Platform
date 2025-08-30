@@ -4,7 +4,7 @@
 BachHouse is a modern student accommodation platform built with Next.js that seamlessly connects students with property owners.  
 It provides students with advanced property search tools and owners with a powerful property management dashboard — all wrapped in a clean, responsive, and performance-optimized interface.  
 
-🔗 **Visit BachHouse**: https://bach-house-private-3d6m.vercel.app/
+🔗 ## Visit BachHouse: https://bach-house-private-3d6m.vercel.app/
 ---
 
 # Features  
