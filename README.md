@@ -1,47 +1,47 @@
 ````markdown
 # BachHouse  - Student Accommodation platform
 
-**BachHouse** is a modern **student accommodation platform** built with **Next.js** that seamlessly connects students with property owners.  
+BachHouse is a modern student accommodation platform built with Next.js that seamlessly connects students with property owners.  
 It provides students with advanced property search tools and owners with a powerful property management dashboard — all wrapped in a clean, responsive, and performance-optimized interface.  
 
 ---
 
-## Features  
+# Features  
 
-### 👩‍🎓 For Students  
-- **Advanced Property Search**: Filter by location, rent, type, and amenities  
-- **Detailed Property Listings**: Photos, descriptions, and rent breakdowns  
-- **Property Details Page**: Comprehensive info for informed decision-making  
-- **Moving Guide**: Helpful resources for students moving to new places  
+#  👩‍🎓 For Students  
+- Advanced Property Search: Filter by location, rent, type, and amenities  
+- Detailed Property Listings: Photos, descriptions, and rent breakdowns  
+- Property Details Page: Comprehensive info for informed decision-making  
+- Moving Guide: Helpful resources for students moving to new places  
 
-### 🏠 For Property Owners  
-- **Dashboard**: Manage all properties in one place  
-- **Add Properties Easily**: Simple listing form with images and amenities  
-- **Manage Listings**: Update, edit, or remove existing listings  
-- **Inquiry Management**: Handle and respond to student inquiries  
+#  For Property Owners  
+- Dashboard: Manage all properties in one place  
+- Add Properties Easily: Simple listing form with images and amenities  
+- Manage Listings: Update, edit, or remove existing listings  
+- Inquiry Management: Handle and respond to student inquiries  
 
 ###  General Features  
-- **Blog Section**: Tips & insights for both students and owners  
-- **Contact System**: Direct communication between users  
-- **Responsive UI**: Optimized for mobile, tablet, and desktop  
-- **Fast Performance**: Built with the latest **Next.js App Router**  
+- Blog Section: Tips & insights for both students and owners  
+- Contact System: Direct communication between users  
+- Responsive UI: Optimized for mobile, tablet, and desktop  
+- Fast Performance: Built with the latest **Next.js App Router**  
 
 ---
 
-##  Tech Stack  
+#  Tech Stack  
 
-- **Framework & Core**: Next.js 15.3.1 (App Router), React 19.1.0  
-- **Styling & UI**: Tailwind CSS, custom reusable components, responsive layout  
-- **Authentication & Security**: Clerk (user auth), JWT for API authorization  
-- **Database & Storage**: MongoDB with Mongoose ODM  
-- **Background Processing**: Inngest (event-driven workflows), Cron jobs  
-- **API & Utilities**: Axios (HTTP requests), React Hot Toast (notifications)  
+- Framework & Core: Next.js 15.3.1 (App Router), React 19.1.0  
+- Styling & UI: Tailwind CSS, custom reusable components, responsive layout  
+- Authentication & Security: Clerk (user auth), JWT for API authorization  
+- Database & Storage: MongoDB with Mongoose ODM  
+- Background Processing: Inngest (event-driven workflows), Cron jobs  
+- API & Utilities: Axios (HTTP requests), React Hot Toast (notifications)  
 
 ---
 
 ## 📂 Project Structure  
 
-```text
+
 bachhouse/
 ├── app/                    # App Router pages
 │   ├── all-properties/     # Property listing page
