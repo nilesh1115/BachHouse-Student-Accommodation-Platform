@@ -1,103 +1,129 @@
-````markdown
-# BachHouse  - Student Accommodation platform
+# BachHouse - Student Accommodation Platform
 
-BachHouse is a modern student accommodation platform built with Next.js that seamlessly connects students with property owners.  
-It provides students with advanced property search tools and owners with a powerful property management dashboard — all wrapped in a clean, responsive, and performance-optimized interface.  
+BachHouse is a comprehensive, full-stack student accommodation platform built with modern web technologies. It bridges the gap between students seeking housing and property owners, providing an intuitive, feature-rich experience for both user groups.
 
-🔗 Visit BachHouse: https://bach-house-private-3d6m.vercel.app/
----
+## 🚀 Live Demo
 
-# Features  
-
-#  For Students  
-- Advanced Property Search: Filter by location, rent, type, and amenities  
-- Detailed Property Listings: Photos, descriptions, and rent breakdowns  
-- Property Details Page: Comprehensive info for informed decision-making  
-- Moving Guide: Helpful resources for students moving to new places  
-
-#  For Property Owners  
-- Dashboard: Manage all properties in one place  
-- Add Properties Easily: Simple listing form with images and amenities  
-- Manage Listings: Update, edit, or remove existing listings  
-- Inquiry Management: Handle and respond to student inquiries  
-
-# General Features  
-- Blog Section: Tips & insights for both students and owners  
-- Contact System: Direct communication between users  
-- Responsive UI: Optimized for mobile, tablet, and desktop  
-- Fast Performance: Built with the latest **Next.js App Router**  
+**🔗 Production URL:** https://bach-house-private-3d6m.vercel.app/
 
 ---
 
-#  Tech Stack  
-
-- Framework & Core: Next.js 15.3.1 (App Router), React 19.1.0  
-- Styling & UI: Tailwind CSS, custom reusable components, responsive layout  
-- Authentication & Security: Clerk (user auth), JWT for API authorization  
-- Database & Storage: MongoDB with Mongoose ODM  
-- Background Processing: Inngest (event-driven workflows), Cron jobs  
-- API & Utilities: Axios (HTTP requests), React Hot Toast (notifications)  
+## 📋 Table of Contents
+- [Overview](#-overview)
+- [Key Features](#-key-features)
+- [Technology Stack](#-technology-stack)
+- [Project Structure](#-project-structure)
+- [Installation Guide](#-installation-guide)
+- [API Documentation](#-api-documentation)
+- [Deployment](#-deployment)
+- [Development](#-development)
+- [Contact](#-contact)
 
 ---
 
-# 📂 Project Structure  
+## 📖 Overview
 
+BachHouse addresses the critical need for specialized student housing solutions by offering:
+- **For Students**: Advanced property discovery with comprehensive filtering and detailed listings
+- **For Property Owners**: Powerful dashboard for property management and tenant communication
+- **Platform Features**: Blog, moving guides, and direct messaging system
 
+The application is built with performance, scalability, and user experience as primary considerations.
+
+---
+
+## ✨ Key Features
+
+### 🎓 Student-Focused Features
+- **Advanced Property Search**: Filter by location, price range, property type, and amenities
+- **Detailed Property Views**: High-resolution images, comprehensive descriptions, and transparent pricing
+- **Moving Guide**: Curated resources for students relocating to new cities
+- **Responsive Design**: Seamless experience across mobile, tablet, and desktop
+
+### 🏠 Property Owner Features
+- **Management Dashboard**: Centralized control for all property listings
+- **Easy Listing Creation**: Streamlined form with image upload and amenity selection
+- **Listing Management**: Edit, update, or remove properties with ease
+- **Inquiry System**: Direct communication channel with potential tenants
+
+### 🌐 Platform Features
+- **Secure Authentication**: Role-based access control
+- **Blog System**: Educational content for students and owners
+- **Contact Management**: Built-in messaging system
+- **Performance Optimized**: Fast loading times and smooth interactions
+
+---
+
+## 🛠 Technology Stack
+
+| Layer | Technology |
+|-------|------------|
+| **Framework** | Next.js 15.3.1 (App Router) |
+| **Frontend** | React 19.1.0, Tailwind CSS |
+| **Authentication** | Clerk |
+| **Database** | MongoDB with Mongoose ODM |
+| **Background Jobs** | Inngest |
+| **HTTP Client** | Axios |
+| **Notifications** | React Hot Toast |
+| **Deployment** | Vercel |
+
+---
+
+## 📁 Project Structure
+
+```
 bachhouse/
-├── app/                    # App Router pages
-│   ├── all-properties/     # Property listing page
-│   ├── property-details/   # Dynamic property details
-│   ├── owner/              # Owner dashboard
-│   ├── blog/               # Blog page
-│   ├── moving-guide/       # Moving guide
-│   ├── contact-us/         # Contact page
-│   └── ...                 # Other routes (auth, policies, etc.)
+├── app/                    # Next.js App Router pages
+│   ├── all-properties/     # Property listing with filters
+│   ├── property-details/   # Individual property pages
+│   ├── owner/              # Owner dashboard and management
+│   ├── blog/               # Blog articles and content
+│   ├── moving-guide/       # Student relocation resources
+│   └── api/                # API route handlers
 ├── components/             # Reusable UI components
-├── config/                 # DB & Inngest configuration
-├── context/                # React context providers
-├── lib/                    # Utility functions
+│   ├── ui/                 # Base components (buttons, cards)
+│   ├── layout/             # Layout components
+│   └── features/           # Feature-specific components
+├── lib/                    # Utility functions and configurations
 ├── models/                 # MongoDB data models
-└── ...                     # Config & build files
-````
+├── context/                # React context providers
+└── public/                 # Static assets
+```
 
 ---
 
-## Installation & Setup
+## ⚙️ Installation Guide
 
-## Prerequisites
+### Prerequisites
+- Node.js 18.0 or higher
+- MongoDB Atlas account or local MongoDB instance
+- Clerk account for authentication
+- Inngest account for background jobs
 
-* Node.js (v18+)
-* MongoDB Atlas (or local MongoDB)
-* Clerk account (for authentication)
-* Inngest account (for background jobs)
+### Step-by-Step Setup
 
-##  Steps
-
-1. **Clone the repository**
-
+1. **Clone the Repository**
    ```bash
    git clone https://github.com/your-username/bachhouse.git
    cd bachhouse
    ```
 
-2. **Install dependencies**
-
+2. **Install Dependencies**
    ```bash
    npm install
    ```
 
-3. **Configure environment variables**
-   Create a `.env.local` file in the root:
-
-   ```text
-   # MongoDB
+3. **Environment Configuration**
+   Create `.env.local` file with the following variables:
+   ```env
+   # Database
    MONGODB_URI=your_mongodb_connection_string
 
-   # Clerk Authentication
+   # Authentication
    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
    CLERK_SECRET_KEY=your_clerk_secret_key
 
-   # Inngest (background jobs)
+   # Background Jobs
    INNGEST_EVENT_KEY=your_inngest_event_key
    INNGEST_SIGNING_KEY=your_inngest_signing_key
 
@@ -106,70 +132,93 @@ bachhouse/
    NEXTAUTH_SECRET=your_nextauth_secret
    ```
 
-4. **Start the development server**
+4. **Database Setup**
+   - Ensure MongoDB is running
+   - The application will automatically create necessary collections
 
+5. **Start Development Server**
    ```bash
    npm run dev
    ```
-
-   * Frontend: [http://localhost:3000](http://localhost:3000)
-   * API Routes: Available under `/api/`
+   Application will be available at: http://localhost:3000
 
 ---
 
-## 📡 API Endpoints
+## 📡 API Documentation
 
-###  Property Management
+### Property Management Endpoints
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/property` | Retrieve all properties |
+| `GET` | `/api/property/list` | Paginated property list |
+| `GET` | `/api/property/[id]` | Get specific property details |
+| `POST` | `/api/property/add` | Create new property listing |
+| `GET` | `/api/property/owner-list` | Get properties by owner |
 
-* `GET /api/property` → Fetch all properties
-* `GET /api/property/list` → Paginated properties
-* `GET /api/property/[id]` → Fetch single property
-* `POST /api/property/add` → Add new property
-* `GET /api/property/owner-list` → Get owner’s properties
-* `POST /api/property/migrate` → Data migration
+### User Management
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/user/data` | Retrieve user profile data |
 
-### 👤 User Management
-
-* `GET /api/user/data` → Fetch user data
-
-### ⚙️ Background Jobs
-
-* `POST /api/inngest` → Handle Inngest webhooks
-
----
-
-##  Key Components
-
-* **Navbar & Footer** → Main layout & navigation
-* **HeroSection** → Landing banner with CTA
-* **PropertyCard & FeaturedProperties** → Display properties
-* **FilterPanel & SearchBar** → Advanced search tools
-* **Owner Dashboard** → Listings & inquiries management
-* **Testimonials & StatsCounter** → Social proof & stats
+### Background Jobs
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/inngest` | Handle background job webhooks |
 
 ---
 
-## Deployment
+## 🚀 Deployment
 
-**Vercel Deployment** (recommended):
+### Vercel (Recommended)
 
-1. Connect repo to Vercel
-2. Add environment variables in dashboard
-3. Deploy automatically on every push to `main`
+1. **Connect Repository**
+   - Link your GitHub repository to Vercel
+
+2. **Configure Environment Variables**
+   - Add all environment variables in Vercel dashboard
+
+3. **Deploy**
+   - Automatic deployments on push to main branch
+   - Preview deployments for pull requests
+
+### Manual Build
+```bash
+npm run build
+npm start
+```
 
 ---
 
-## 📜 Scripts
+## 🛠 Development
 
-* `npm run dev` → Start dev server
-* `npm run build` → Build for production
-* `npm run start` → Run production server
-* `npm run lint` → Lint codebase
+### Available Scripts
+```bash
+npm run dev          # Start development server
+npm run build        # Create production build
+npm run start        # Start production server
+npm run lint         # Run ESLint
+npm run lint:fix     # Fix linting issues
+```
+
+### Code Quality
+- ESLint configuration for code consistency
+- Pre-commit hooks for quality checks
+- Responsive design testing requirements
 
 ---
 
+## 🤝 Contributing
 
-## 💬 Support
+While this is a personal project, contributions and suggestions are welcome. Please ensure:
+- Code follows existing style patterns
+- All tests pass
+- New features include appropriate documentation
 
-* 📧 Email:nileshnikam0501@gmail.com
+---
+
+## 📞 Contact
+
+**Nilesh Nikam**  
+📧 Email: nileshnikam0501@gmail.com  
+🔗 LinkedIn: https://www.linkedin.com/in/nilesh-nikam-99b338214/
 
