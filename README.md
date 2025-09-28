@@ -73,21 +73,84 @@ The application is built with performance, scalability, and user experience as p
 
 ```
 bachhouse/
-├── app/                    # Next.js App Router pages
-│   ├── all-properties/     # Property listing with filters
-│   ├── property-details/   # Individual property pages
-│   ├── owner/              # Owner dashboard and management
-│   ├── blog/               # Blog articles and content
-│   ├── moving-guide/       # Student relocation resources
-│   └── api/                # API route handlers
-├── components/             # Reusable UI components
-│   ├── ui/                 # Base components (buttons, cards)
-│   ├── layout/             # Layout components
-│   └── features/           # Feature-specific components
-├── lib/                    # Utility functions and configurations
-├── models/                 # MongoDB data models
-├── context/                # React context providers
-└── public/                 # Static assets
+├── app/                           # Next.js App Router
+│   ├── about-us/                  # About us page
+│   ├── all-properties/            # Property listing with filters
+│   ├── api/                       # API route handlers
+│   │   ├── inngest/               # Background job handlers
+│   │   ├── property/              # Property management APIs
+│   │   │   ├── [id]/              # Dynamic property routes
+│   │   │   ├── add/               # Add new property
+│   │   │   ├── list/              # Property listing
+│   │   │   ├── migrate/           # Data migration
+│   │   │   ├── owner-list/        # Owner's properties
+│   │   │   └── route.js           # Main property routes
+│   │   └── user/data/             # User data endpoints
+│   ├── blog/                      # Blog articles
+│   ├── contact-us/                # Contact page
+│   ├── moving-guide/              # Student relocation resources
+│   ├── owner/                     # Owner dashboard section
+│   │   ├── inquiries/             # Inquiry management
+│   │   ├── my-listings/           # Owner's property listings
+│   │   ├── layout.jsx             # Owner layout
+│   │   └── page.jsx               # Owner dashboard main page
+│   ├── privacy-policy/            # Privacy policy page
+│   ├── property-details/[id]/     # Dynamic property details
+│   ├── roommate-finder/           # Roommate matching feature
+│   ├── sign-in/                   # Authentication
+│   ├── terms-of-service/          # Terms and conditions
+│   ├── globals.css                # Global styles
+│   ├── layout.js                  # Root layout
+│   └── page.jsx                   # Homepage
+├── components/                    # Reusable UI components
+│   ├── owner/                     # Owner-specific components
+│   │   ├── Footer.jsx
+│   │   ├── Navbar.jsx
+│   │   └── Sidebar.jsx
+│   ├── CTAButton.jsx              # Call-to-action buttons
+│   ├── FeaturedProperties.js      # Featured property listings
+│   ├── FilterPanel.jsx            # Property filtering
+│   ├── Footer.jsx                 # Site footer
+│   ├── HeroSection.jsx            # Landing hero section
+│   ├── HowItWorks.jsx             # Process explanation
+│   ├── LoadingSpinner.js          # Loading indicators
+│   ├── Navbar.jsx                 # Navigation header
+│   ├── PropertyCard.jsx           # Property display cards
+│   ├── SearchBar.jsx              # Search functionality
+│   ├── StatsCounter.jsx           # Statistics display
+│   ├── TestimonialCard.jsx        # Individual testimonials
+│   └── Testimonials.jsx           # Testimonials section
+├── config/                        # Configuration files
+│   ├── db.js                      # Database configuration
+│   └── inngest.js                 # Background jobs setup
+├── context/                       # React context providers
+│   └── AppContext.jsx             # Main application context
+├── lib/                           # Utility libraries
+│   ├── authOwner.js               # Owner authentication
+│   └── db.js                      # Database utilities
+├── models/                        # MongoDB data models
+│   ├── Property.js                # Property schema
+│   └── User.js                    # User schema
+├── public/                        # Static assets
+│   ├── assets/                    # Images and icons
+│   │   ├── aboutusing.png
+│   │   ├── aboutus.png.png
+│   │   ├── assets.js
+│   │   ├── bgimg.png
+│   │   ├── closeicon.png
+│   │   ├── contact.jpg
+│   │   ├── enter.jpg
+│   │   └── lb.png
+│   └── favicon.ico                # Site favicon
+├── .env                           # Environment variables
+├── .gitignore                     # Git ignore rules
+├── eslint.config.mjs              # ESLint configuration
+├── jsconfig.json                  # JavaScript configuration
+├── middleware.ts                  # Next.js middleware
+├── next.config.js                 # Next.js configuration
+├── package.json                   # Dependencies and scripts
+├── postcss.config.mjs             # PostCSS configuration
+└── README.md                      # Project documentation
 ```
 
 ---
@@ -154,6 +217,7 @@ bachhouse/
 | `GET` | `/api/property/[id]` | Get specific property details |
 | `POST` | `/api/property/add` | Create new property listing |
 | `GET` | `/api/property/owner-list` | Get properties by owner |
+| `POST` | `/api/property/migrate` | Data migration utilities |
 
 ### User Management
 | Method | Endpoint | Description |
@@ -200,10 +264,19 @@ npm run lint         # Run ESLint
 npm run lint:fix     # Fix linting issues
 ```
 
-### Code Quality
-- ESLint configuration for code consistency
-- Pre-commit hooks for quality checks
-- Responsive design testing requirements
+### Key Components Overview
+
+- **Layout Components**: Responsive navigation and footer
+- **Property Components**: Cards, filters, and search functionality
+- **Owner Dashboard**: Complete property management interface
+- **API Routes**: RESTful endpoints for data management
+- **Context Providers**: State management across the application
+
+### Code Quality Standards
+- ESLint configuration for consistent code style
+- Component-based architecture for reusability
+- Responsive design principles
+- Performance optimization practices
 
 ---
 
@@ -222,3 +295,6 @@ While this is a personal project, contributions and suggestions are welcome. Ple
 📧 Email: nileshnikam0501@gmail.com  
 🔗 LinkedIn: https://www.linkedin.com/in/nilesh-nikam-99b338214/
 
+---
+
+**Built with modern web technologies and industry best practices, featuring a scalable architecture and professional code organization.**
